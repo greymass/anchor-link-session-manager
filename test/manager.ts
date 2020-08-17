@@ -1,26 +1,20 @@
 import * as assert from 'assert'
+import {join as joinPath} from 'path'
 import 'mocha'
-import { v4 as uuid, validate as uuidValidate } from 'uuid';
+import {validate as uuidValidate} from 'uuid'
 
-import {Checksum256, Name, PrivateKey, PublicKey} from '@greymass/eosio'
+import {APIClient, PrivateKey} from '@greymass/eosio'
+import AnchorLink from 'anchor-link'
 
 import {AnchorLinkSessionManager} from '../src/manager'
 import {AnchorLinkSessionManagerSession} from '../src/session'
-import {AnchorLinkSessionManagerStorage} from '../src/storage'
 
-const mockSession = {
-    network: '2a02a0053e5a8cf73a56ba0fda11e4d92e0238a4a2aa74fccf46d5a910746840',
-    account: 'teamgreymass',
-    permission: 'active',
-    publicKey: 'PUB_K1_6RrvujLQN1x5Tacbep1KAk8zzKpSThAQXBCKYFfGUYeACcSRFs',
-    name: 'testsession',
-}
+import {mockStorage} from './utils/mock-data'
+import {MockProvider} from './utils/mock-provider'
+import {MockTransport} from './utils/mock-transport'
 
-const mockStorage = new AnchorLinkSessionManagerStorage({
-    linkId: uuid(),
-    linkUrl: 'cb.anchor.link',
-    requestKey: PrivateKey.generate('K1').toWif(),
-    sessions: [],
+const client = new APIClient({
+    provider: new MockProvider(joinPath(__dirname, 'data')),
 })
 
 suite('manager', function () {
@@ -35,7 +29,7 @@ suite('manager', function () {
 
     test('init with storage', function () {
         const manager = new AnchorLinkSessionManager({
-            storage: mockStorage
+            storage: mockStorage,
         })
         assert.equal(mockStorage.linkId, manager.storage.linkId)
         assert.equal(mockStorage.linkUrl, manager.storage.linkUrl)
@@ -43,4 +37,56 @@ suite('manager', function () {
         assert.equal(mockStorage.sessions, manager.storage.sessions)
     })
 
+    test('login', async function () {
+        const manager = new AnchorLinkSessionManager({
+            storage: mockStorage,
+        })
+
+        await manager
+            .connect()
+            .then(async (socket) => {
+                const transport = new MockTransport(manager)
+                const chainId = transport.config.chainId.toString()
+                const link = new AnchorLink({chainId, client, transport})
+                const identity = await link.login('ihasnocpunet')
+                manager.addSession(AnchorLinkSessionManagerSession.from(chainId, identity.session))
+                socket.close()
+            })
+            .catch((message) => {
+                throw new Error(message)
+            })
+    })
+
+    test('login + transact', async function () {
+        const manager = new AnchorLinkSessionManager({
+            storage: mockStorage,
+        })
+        await manager
+            .connect()
+            .then(async (socket) => {
+                const transport = new MockTransport(manager)
+                const chainId = transport.config.chainId.toString()
+                const link = new AnchorLink({chainId, client, transport})
+                const {session} = await link.login('ihasnocpunet')
+                manager.addSession(AnchorLinkSessionManagerSession.from(chainId, session))
+                await session.transact({
+                    action: {
+                        account: 'eosio.token',
+                        name: 'transfer',
+                        authorization: [session.auth],
+                        data: {
+                            from: session.auth.actor,
+                            to: 'teamgreymass',
+                            quantity: '100000.0000 EOS',
+                            memo: 'lol',
+                        },
+                    },
+                })
+
+                socket.close()
+            })
+            .catch((message) => {
+                throw new Error(message)
+            })
+    })
 })

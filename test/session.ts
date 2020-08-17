@@ -1,7 +1,7 @@
 import * as assert from 'assert'
 import 'mocha'
 
-import {Checksum256, Name, PrivateKey, PublicKey} from '@greymass/eosio'
+import {Checksum256, Name, PublicKey} from '@greymass/eosio'
 
 import {AnchorLinkSessionManagerSession} from '../src/session'
 
@@ -20,8 +20,8 @@ suite('session', function () {
             Name.from(account),
             Name.from(permission),
             PublicKey.from(publicKey),
-            Name.from(sessionName),
-        );
+            Name.from(sessionName)
+        )
         assert.equal(session.name, sessionName)
         assert.equal(session.account.network, chainId)
         assert.equal(session.account.name, account)

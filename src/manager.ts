@@ -1,6 +1,5 @@
 import WebSocket from 'isomorphic-ws'
-import {SigningRequest} from 'eosio-signing-request'
-import {PrivateKey, PublicKey} from '@greymass/eosio'
+import {Bytes, PrivateKey} from '@greymass/eosio'
 import {v4 as uuid} from 'uuid'
 
 import {AnchorLinkSessionManagerSession} from './session'
@@ -46,8 +45,32 @@ export class AnchorLinkSessionManager {
         // NYI
     }
 
-    connect() {
-        const linkUrl = `wss://${this.storage.linkUrl}/${this.storage.linkId}`
-        this.socket = new WebSocket(linkUrl)
+    connect(): Promise<WebSocket> {
+        this.connecting = true
+        this.ready = false
+        return new Promise((resolve, reject) => {
+            const linkUrl = `wss://${this.storage.linkUrl}/${this.storage.linkId}`
+            const socket = new WebSocket(linkUrl)
+            socket.onopen = () => {
+                console.log(`Connected to "${linkUrl}" channel.`)
+                this.connecting = false
+                this.ready = true
+                resolve(this.socket)
+            }
+            socket.onmessage = (message: any) => {
+                console.log(`Received transaction on "${linkUrl}" channel.`)
+                this.handleRequest(message.data)
+            }
+            socket.onerror = function (err) {
+                this.connecting = false
+                this.ready = false
+                reject(err)
+            }
+            this.socket = socket
+        })
+    }
+
+    handleRequest(encoded: Bytes) {
+        console.log(encoded)
     }
 }
