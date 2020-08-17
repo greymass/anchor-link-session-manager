@@ -1,5 +1,5 @@
 import WebSocket from 'isomorphic-ws'
-import {Bytes, PrivateKey} from '@greymass/eosio'
+import {Bytes, Checksum256, Checksum256Type, Name, NameType, PrivateKey} from '@greymass/eosio'
 import {v4 as uuid} from 'uuid'
 
 import {AnchorLinkSessionManagerSession} from './session'
@@ -31,6 +31,14 @@ export class AnchorLinkSessionManager {
 
     addSession(session: AnchorLinkSessionManagerSession) {
         this.storage.add(session)
+    }
+
+    getSession(chainId: Checksum256Type, account: NameType, permission: NameType): AnchorLinkSessionManagerSession | undefined {
+        return this.storage.get(
+            Checksum256.from(chainId),
+            Name.from(account),
+            Name.from(permission),
+        )
     }
 
     clearSessions() {

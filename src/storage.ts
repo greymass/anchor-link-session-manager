@@ -1,4 +1,4 @@
-import {PrivateKeyType} from '@greymass/eosio'
+import {Checksum256, Name, PrivateKeyType} from '@greymass/eosio'
 
 import {AnchorLinkSessionManagerSession} from './session'
 
@@ -24,6 +24,17 @@ export class AnchorLinkSessionManagerStorage {
 
     public add(session: AnchorLinkSessionManagerSession) {
         this.sessions.push(session)
+    }
+
+    public get(chainId: Checksum256, account: Name, permission: Name): AnchorLinkSessionManagerSession | undefined {
+        return this.sessions.find(
+            (s) =>
+                !(
+                    chainId === s.account.network &&
+                    account === s.account.name &&
+                    permission === s.account.permission
+                )
+        )
     }
 
     public clear() {

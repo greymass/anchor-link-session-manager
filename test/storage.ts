@@ -88,6 +88,27 @@ suite('storage', function () {
         assert.equal(manager.storage.sessions.length, 0)
     })
 
+    test('get session returns match', function () {
+        const manager = new AnchorLinkSessionManager()
+        const session = new AnchorLinkSessionManagerSession(
+            mockSession.network,
+            mockSession.account,
+            mockSession.permission,
+            mockSession.publicKey,
+            mockSession.name
+        )
+        manager.addSession(session)
+        assert.equal(manager.storage.sessions.length, 1)
+        const matching = manager.getSession(mockSession.network, mockSession.account, mockSession.permission)
+        assert.equal(matching === session, true)
+    })
+
+    test('get session returns undefined', function () {
+        const manager = new AnchorLinkSessionManager()
+        const matching = manager.getSession(mockSession.network, mockSession.account, mockSession.permission)
+        assert.equal(undefined === matching, true)
+    })
+
     test('clear sessions', function () {
         const manager = new AnchorLinkSessionManager()
         const session1 = new AnchorLinkSessionManagerSession(
