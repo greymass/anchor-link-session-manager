@@ -1,7 +1,17 @@
 import WebSocket from 'isomorphic-ws'
-import {Bytes, Checksum256, Checksum256Type, Name, NameType, PrivateKey} from '@greymass/eosio'
+import {
+    Bytes,
+    Checksum256,
+    Checksum256Type,
+    Name,
+    NameType,
+    PrivateKey,
+    Serializer,
+} from '@greymass/eosio'
 import {v4 as uuid} from 'uuid'
+import {AES_CBC} from 'asmcrypto.js'
 
+import {LinkCreate, SealedMessage} from './link-types'
 import {AnchorLinkSessionManagerSession} from './session'
 import {AnchorLinkSessionManagerStorage} from './storage'
 
@@ -33,11 +43,15 @@ export class AnchorLinkSessionManager {
         this.storage.add(session)
     }
 
-    getSession(chainId: Checksum256Type, account: NameType, permission: NameType): AnchorLinkSessionManagerSession | undefined {
+    getSession(
+        chainId: Checksum256Type,
+        account: NameType,
+        permission: NameType
+    ): AnchorLinkSessionManagerSession | undefined {
         return this.storage.get(
             Checksum256.from(chainId),
             Name.from(account),
-            Name.from(permission),
+            Name.from(permission)
         )
     }
 
@@ -79,6 +93,13 @@ export class AnchorLinkSessionManager {
     }
 
     handleRequest(encoded: Bytes) {
-        console.log(encoded)
+        const message = Serializer.decode({
+            type: SealedMessage,
+            data: encoded,
+        })
+        // TODO - Ensure from is one of the saved sessions
+        // TODO - Decrypt request
+        // const key = this.storage.requestKey
+        // const cbc = new AES_CBC(key.array.slice(0, 32), key.array.slice(32, 48))
     }
 }

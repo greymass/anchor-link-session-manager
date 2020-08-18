@@ -1139,10 +1139,10 @@ alphanum-sort@^1.0.0:
   resolved "https://registry.yarnpkg.com/alphanum-sort/-/alphanum-sort-1.0.2.tgz#97a1119649b211ad33691d9f9f486a8ec9fbe0a3"
   integrity sha1-l6ERlkmyEa0zaR2fn0hqjsn74KM=
 
-anchor-link@^3.0.0-beta5:
-  version "3.0.0-beta5"
-  resolved "https://registry.yarnpkg.com/anchor-link/-/anchor-link-3.0.0-beta5.tgz#5533195dc05f46f7e185342363106593b554e804"
-  integrity sha512-aGJfepr5Wh/wdMteM+3Xv4xaDZyIVQe3EY/2FfeWgr44kgBu2/EIiAFeUBScNuGt62IWyQBIv0rkTwor4HjlPw==
+anchor-link@^3.0.0-beta6:
+  version "3.0.0-beta6"
+  resolved "https://registry.yarnpkg.com/anchor-link/-/anchor-link-3.0.0-beta6.tgz#b49e6044fa93a4eab53d89900162d07b4cd1aa7e"
+  integrity sha512-fYCZCks0UOVidP14USmqTwOz3z2AgOyA0cCAMnJ0TDrGtrr0CUP+eZ5wEeixDFjsuNBoaRo03/7glmtNE4g/wA==
   dependencies:
     "@greymass/eosio" "0.0.3"
     asmcrypto.js "^2.3.2"

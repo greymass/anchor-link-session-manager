@@ -6,6 +6,7 @@ import {validate as uuidValidate} from 'uuid'
 import {APIClient, PrivateKey} from '@greymass/eosio'
 import AnchorLink from 'anchor-link'
 
+import {LinkCreate} from '../src/link-types'
 import {AnchorLinkSessionManager} from '../src/manager'
 import {AnchorLinkSessionManagerSession} from '../src/session'
 
@@ -49,7 +50,18 @@ suite('manager', function () {
                 const chainId = transport.config.chainId.toString()
                 const link = new AnchorLink({chainId, client, transport})
                 const identity = await link.login('ihasnocpunet')
-                manager.addSession(AnchorLinkSessionManagerSession.from(chainId, identity.session))
+                const {request} = identity
+                const linkCreateInfo = request.getInfoKey('link', LinkCreate)
+                if (linkCreateInfo) {
+                    const session = new AnchorLinkSessionManagerSession(
+                        chainId,
+                        identity.session.auth.actor,
+                        identity.session.auth.permission,
+                        linkCreateInfo['request_key'].toString(),
+                        identity.session.identifier
+                    )
+                    manager.addSession(session)
+                }
                 socket.close()
             })
             .catch((message) => {
@@ -57,36 +69,47 @@ suite('manager', function () {
             })
     })
 
-    test('login + transact', async function () {
-        const manager = new AnchorLinkSessionManager({
-            storage: mockStorage,
-        })
-        await manager
-            .connect()
-            .then(async (socket) => {
-                const transport = new MockTransport(manager)
-                const chainId = transport.config.chainId.toString()
-                const link = new AnchorLink({chainId, client, transport})
-                const {session} = await link.login('ihasnocpunet')
-                manager.addSession(AnchorLinkSessionManagerSession.from(chainId, session))
-                await session.transact({
-                    action: {
-                        account: 'eosio.token',
-                        name: 'transfer',
-                        authorization: [session.auth],
-                        data: {
-                            from: session.auth.actor,
-                            to: 'teamgreymass',
-                            quantity: '100000.0000 EOS',
-                            memo: 'lol',
-                        },
-                    },
-                })
-
-                socket.close()
-            })
-            .catch((message) => {
-                throw new Error(message)
-            })
-    })
+    // test('login + transact', async function () {
+    //     const manager = new AnchorLinkSessionManager({
+    //         storage: mockStorage,
+    //     })
+    //     await manager
+    //         .connect()
+    //         .then(async (socket) => {
+    //             const transport = new MockTransport(manager)
+    //             const chainId = transport.config.chainId.toString()
+    //             const link = new AnchorLink({chainId, client, transport})
+    //             const identity = await link.login('ihasnocpunet')
+    //             const { request } = identity
+    //             const linkCreateInfo = request.getInfoKey('link', LinkCreate)
+    //             if (linkCreateInfo) {
+    //                 const session = new AnchorLinkSessionManagerSession(
+    //                     chainId,
+    //                     identity.session.auth.actor,
+    //                     identity.session.auth.permission,
+    //                     linkCreateInfo['request_key'].toString(),
+    //                     identity.session.identifier,
+    //                 )
+    //                 manager.addSession(session)
+    //                 const transaction = {
+    //                     action: {
+    //                         account: 'eosio.token',
+    //                         name: 'transfer',
+    //                         authorization: [identity.session.auth],
+    //                         data: {
+    //                             from: identity.session.auth.actor,
+    //                             to: 'teamgreymass',
+    //                             quantity: '100000.0000 EOS',
+    //                             memo: 'lol',
+    //                         },
+    //                     },
+    //                 }
+    //                 await identity.session.transact(transaction)
+    //             }
+    //             socket.close()
+    //         })
+    //         .catch((message) => {
+    //             throw new Error(message)
+    //         })
+    // })
 })

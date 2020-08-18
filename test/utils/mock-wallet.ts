@@ -14,6 +14,7 @@ import {
 
 import {ResolvedSigningRequest, SigningRequest} from 'eosio-signing-request'
 
+import {LinkCreate} from '../../src/link-types'
 import {AnchorLinkSessionManager} from '../../src/manager'
 
 interface MockWalletOptions {
@@ -61,7 +62,7 @@ export class MockWallet {
             const body = JSON.stringify({
                 ...callback.payload,
                 link_ch: `https://${manager.storage.linkUrl}/${manager.storage.linkId}`,
-                link_key: PrivateKey.from(manager.storage.requestKey).toPublic(),
+                link_key: PrivateKey.from(manager.storage.requestKey).toPublic().toString(),
                 link_name: 'MockWallet',
             })
             await fetch(callback.url, {

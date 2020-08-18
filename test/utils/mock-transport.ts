@@ -46,6 +46,6 @@ export class MockTransport implements LinkTransport {
     }
     async onRequest(request: SigningRequest) {
         const wallet = new MockWallet(this.config)
-        await wallet.completeRequest(request, this.manager)
+        const completed = await wallet.completeRequest(request, this.manager)
     }
 }

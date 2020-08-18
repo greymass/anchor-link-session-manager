@@ -99,13 +99,21 @@ suite('storage', function () {
         )
         manager.addSession(session)
         assert.equal(manager.storage.sessions.length, 1)
-        const matching = manager.getSession(mockSession.network, mockSession.account, mockSession.permission)
+        const matching = manager.getSession(
+            mockSession.network,
+            mockSession.account,
+            mockSession.permission
+        )
         assert.equal(matching === session, true)
     })
 
     test('get session returns undefined', function () {
         const manager = new AnchorLinkSessionManager()
-        const matching = manager.getSession(mockSession.network, mockSession.account, mockSession.permission)
+        const matching = manager.getSession(
+            mockSession.network,
+            mockSession.account,
+            mockSession.permission
+        )
         assert.equal(undefined === matching, true)
     })
 

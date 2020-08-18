@@ -7,7 +7,6 @@ import {
     TimePointSec,
 } from '@greymass/eosio'
 
-import {LinkSession} from 'anchor-link'
 import {SigningRequest} from 'eosio-signing-request'
 
 import {AnchorLinkSessionManagerAccount} from './account'
@@ -30,16 +29,6 @@ export class AnchorLinkSessionManagerSession {
             permission: permission,
             publicKey: publicKey,
         })
-    }
-
-    static from(chainId: Checksum256Type, session: LinkSession) {
-        return new AnchorLinkSessionManagerSession(
-            chainId,
-            session.auth.actor,
-            session.auth.permission,
-            session.publicKey,
-            session.identifier
-        )
     }
 }
 

@@ -26,7 +26,11 @@ export class AnchorLinkSessionManagerStorage {
         this.sessions.push(session)
     }
 
-    public get(chainId: Checksum256, account: Name, permission: Name): AnchorLinkSessionManagerSession | undefined {
+    public get(
+        chainId: Checksum256,
+        account: Name,
+        permission: Name
+    ): AnchorLinkSessionManagerSession | undefined {
         return this.sessions.find(
             (s) =>
                 !(
