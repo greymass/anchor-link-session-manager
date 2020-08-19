@@ -9,14 +9,19 @@ import {
     Serializer,
 } from '@greymass/eosio'
 import {v4 as uuid} from 'uuid'
-import {AES_CBC} from 'asmcrypto.js'
 
-import {LinkCreate, SealedMessage} from './link-types'
+import {SealedMessage} from './link-types'
 import {AnchorLinkSessionManagerSession} from './session'
 import {AnchorLinkSessionManagerStorage} from './storage'
+import {unsealMessage} from './utils'
 
 export interface AnchorLinkSessionManagerOptions {
+    handler: AnchorLinkSessionManagerEventHander
     storage?: AnchorLinkSessionManagerStorage
+}
+
+export interface AnchorLinkSessionManagerEventHander {
+    onIncomingRequest(payload: string)
 }
 
 export class AnchorLinkSessionManager {
@@ -24,9 +29,11 @@ export class AnchorLinkSessionManager {
     public connecting = false
     public storage: AnchorLinkSessionManagerStorage
 
+    private handler: AnchorLinkSessionManagerEventHander
     private socket: WebSocket
 
-    constructor(options?: AnchorLinkSessionManagerOptions) {
+    constructor(options: AnchorLinkSessionManagerOptions) {
+        this.handler = options.handler
         if (options && options.storage) {
             this.storage = options.storage
         } else {
@@ -74,13 +81,11 @@ export class AnchorLinkSessionManager {
             const linkUrl = `wss://${this.storage.linkUrl}/${this.storage.linkId}`
             const socket = new WebSocket(linkUrl)
             socket.onopen = () => {
-                console.log(`Connected to "${linkUrl}" channel.`)
                 this.connecting = false
                 this.ready = true
                 resolve(this.socket)
             }
             socket.onmessage = (message: any) => {
-                console.log(`Received transaction on "${linkUrl}" channel.`)
                 this.handleRequest(message.data)
             }
             socket.onerror = function (err) {
@@ -92,14 +97,36 @@ export class AnchorLinkSessionManager {
         })
     }
 
-    handleRequest(encoded: Bytes) {
+    disconnect() {
+        this.connecting = false
+        this.ready = false
+        this.socket.close(1000)
+    }
+
+    handleRequest(encoded: Bytes): string {
+        // Decode the incoming message
         const message = Serializer.decode({
             type: SealedMessage,
             data: encoded,
         })
-        // TODO - Ensure from is one of the saved sessions
-        // TODO - Decrypt request
-        // const key = this.storage.requestKey
-        // const cbc = new AES_CBC(key.array.slice(0, 32), key.array.slice(32, 48))
+
+        // Unseal the message using the session managers request key
+        const unsealed = unsealMessage(
+            message.ciphertext,
+            PrivateKey.from(this.storage.requestKey),
+            message.from,
+            message.nonce
+        )
+
+        // Ensure an active session for this key exists in storage
+        if (!this.storage.has(message.from)) {
+            throw new Error(`Unknown session using ${message.from}`)
+        }
+
+        // Fire callback for onIncomingRequest defined by client application
+        this.handler.onIncomingRequest(unsealed)
+
+        // Return the unsealed message
+        return unsealed
     }
 }

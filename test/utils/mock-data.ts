@@ -1,10 +1,23 @@
+import {join as joinPath} from 'path'
 import {v4 as uuid} from 'uuid'
-import {PrivateKey} from '@greymass/eosio'
+import {APIClient, PrivateKey} from '@greymass/eosio'
+import {AnchorLinkSessionManagerEventHander} from '../../src/manager'
 import {AnchorLinkSessionManagerStorage} from '../../src/storage'
+import {MockProvider} from './mock-provider'
+
+const client = new APIClient({
+    provider: new MockProvider(joinPath(__dirname, '..', 'data')),
+})
+
+export const mockEventHandler: AnchorLinkSessionManagerEventHander = {
+    onIncomingRequest: (payload) => {
+        console.log('MockEventHandler.onIncomingRequest', payload)
+    },
+}
 
 export const mockSession = {
     network: '2a02a0053e5a8cf73a56ba0fda11e4d92e0238a4a2aa74fccf46d5a910746840',
-    account: 'teamgreymass',
+    actor: 'greymassaaaa',
     permission: 'active',
     publicKey: 'PUB_K1_6RrvujLQN1x5Tacbep1KAk8zzKpSThAQXBCKYFfGUYeACcSRFs',
     name: 'testsession',
@@ -35,4 +48,11 @@ export const mockTransaction = {
             },
         },
     ],
+}
+
+export const mockWalletConfig = {
+    authorization: {actor: 'greymassaaaa', permission: 'active'},
+    chainId: '2a02a0053e5a8cf73a56ba0fda11e4d92e0238a4a2aa74fccf46d5a910746840',
+    client,
+    key: '5K1D5MJaKtoN4ExGFKaKoDQ1orDsq8nLPw4C6sqnRH85Bibr6cy',
 }

@@ -1,61 +1,47 @@
 import {
+    Checksum256,
     Checksum256Type,
     Name,
     NameType,
     PublicKey,
     PublicKeyType,
-    TimePointSec,
 } from '@greymass/eosio'
+import {LoginResult} from 'anchor-link'
 
-import {SigningRequest} from 'eosio-signing-request'
-
-import {AnchorLinkSessionManagerAccount} from './account'
+import {LinkCreate} from './link-types'
 
 export class AnchorLinkSessionManagerSession {
+    public actor!: Name
+    public permission!: Name
     public name!: Name
-    public account!: AnchorLinkSessionManagerAccount
+    public network!: Checksum256
+    public publicKey!: PublicKey
 
     constructor(
         network: Checksum256Type,
-        account: NameType,
+        actor: NameType,
         permission: NameType,
         publicKey: PublicKeyType,
         name: NameType
     ) {
+        this.network = Checksum256.from(network)
+        this.actor = Name.from(actor)
+        this.permission = Name.from(permission)
         this.name = Name.from(name)
-        this.account = new AnchorLinkSessionManagerAccount({
-            name: account,
-            network: network,
-            permission: permission,
-            publicKey: publicKey,
-        })
+        this.publicKey = PublicKey.from(publicKey)
     }
-}
 
-export class AnchorLinkSessionData {
-    public requestKey!: PublicKey
-    public created!: TimePointSec
-    public updated!: TimePointSec
-
-    constructor(requestKey: PublicKeyType) {
-        this.requestKey = PublicKey.from(requestKey)
-        this.created = TimePointSec.from(Date())
-        this.updated = TimePointSec.from(Date())
+    public static fromLoginResult(result: LoginResult): AnchorLinkSessionManagerSession {
+        const linkInfo = result.request.getInfoKey('link', LinkCreate)
+        if (!linkInfo) {
+            throw new Error('identity request does not contain link information')
+        }
+        return new AnchorLinkSessionManagerSession(
+            result.request.getChainId(),
+            result.session.auth.actor,
+            result.session.auth.permission,
+            linkInfo['request_key'].toString(),
+            result.session.identifier
+        )
     }
-}
-
-export class AnchorLinkSessionRequest {
-    public session!: AnchorLinkSessionManagerSession
-    public info!: LinkInfo
-    public request!: LinkRequest
-}
-
-export class LinkRequest extends SigningRequest {
-    public name!: Name
-    public key!: PublicKey
-    public identifier!: string
-}
-
-export class LinkInfo {
-    public expiration!: TimePointSec
 }

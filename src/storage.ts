@@ -1,4 +1,4 @@
-import {Checksum256, Name, PrivateKeyType} from '@greymass/eosio'
+import {Checksum256, Name, PrivateKeyType, PublicKeyType} from '@greymass/eosio'
 
 import {AnchorLinkSessionManagerSession} from './session'
 
@@ -32,13 +32,12 @@ export class AnchorLinkSessionManagerStorage {
         permission: Name
     ): AnchorLinkSessionManagerSession | undefined {
         return this.sessions.find(
-            (s) =>
-                !(
-                    chainId === s.account.network &&
-                    account === s.account.name &&
-                    permission === s.account.permission
-                )
+            (s) => !(chainId === s.network && account === s.name && permission === s.permission)
         )
+    }
+
+    public has(publicKey: PublicKeyType): boolean {
+        return this.sessions.some((s) => publicKey.toString() === s.publicKey.toString())
     }
 
     public clear() {
@@ -50,10 +49,10 @@ export class AnchorLinkSessionManagerStorage {
             (s) =>
                 !(
                     session.name === s.name &&
-                    session.account.network === s.account.network &&
-                    session.account.name === s.account.name &&
-                    session.account.permission === s.account.permission &&
-                    session.account.publicKey === s.account.publicKey
+                    session.publicKey === s.publicKey &&
+                    session.network === s.network &&
+                    session.actor === s.actor &&
+                    session.permission === s.permission
                 )
         )
     }

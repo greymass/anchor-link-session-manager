@@ -1,0 +1,18 @@
+{
+    "server_version": "c173d52d",
+    "chain_id": "2a02a0053e5a8cf73a56ba0fda11e4d92e0238a4a2aa74fccf46d5a910746840",
+    "head_block_num": 31252985,
+    "last_irreversible_block_num": 31252654,
+    "last_irreversible_block_id": "01dce0ae0c4245ea74fb4a29107fc156caa667e8ebc2688ae1664cbdc9254759",
+    "head_block_id": "01dce1f989033588aaebe6bfe1d541eb0d39fbe350735a94e72ad73e387dfbb3",
+    "head_block_time": "2020-08-18T19:38:27.000",
+    "head_block_producer": "eosdacserval",
+    "virtual_block_cpu_limit": 400000000,
+    "virtual_block_net_limit": 524288000,
+    "block_cpu_limit": 399999,
+    "block_net_limit": 524288,
+    "server_version_string": "v2.0.6",
+    "fork_db_head_block_num": 31252985,
+    "fork_db_head_block_id": "01dce1f989033588aaebe6bfe1d541eb0d39fbe350735a94e72ad73e387dfbb3",
+    "server_full_version_string": "v2.0.6-c173d52da6a386f3dd0ae00c758318a064ea0165-dirty"
+}

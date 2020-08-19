@@ -1,4 +1,5 @@
-export * from './account'
+export * from './link-types'
 export * from './manager'
 export * from './session'
 export * from './storage'
+export * from './utils'

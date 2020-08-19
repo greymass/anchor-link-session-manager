@@ -1,8 +1,13 @@
 import fetch from 'node-fetch'
+import zlib from 'pako'
 
 import {
+    ABIDef,
+    API,
+    APIClient,
     Checksum256,
     Checksum256Type,
+    Name,
     PermissionLevel,
     PermissionLevelType,
     PrivateKey,
@@ -12,37 +17,60 @@ import {
     Transaction,
 } from '@greymass/eosio'
 
-import {ResolvedSigningRequest, SigningRequest} from 'eosio-signing-request'
+import {
+    AbiProvider,
+    ResolvedSigningRequest,
+    SigningRequest,
+    SigningRequestEncodingOptions,
+} from 'eosio-signing-request'
 
-import {LinkCreate} from '../../src/link-types'
 import {AnchorLinkSessionManager} from '../../src/manager'
+import {mockWalletConfig} from './mock-data'
 
 interface MockWalletOptions {
     authorization: PermissionLevelType
     chainId: Checksum256Type
+    client: APIClient
     key: PrivateKeyType
 }
 
-const expiration = TimePointSec.fromMilliseconds(Date.now() + 60 * 1000)
+const expiration = TimePointSec.from('2020-08-18T19:38:47')
 
-export class MockWallet {
+export class MockWallet implements AbiProvider {
     public authorization: PermissionLevel
     public chainId: Checksum256
+    public readonly client: APIClient
     public key: PrivateKey
 
-    constructor(options: MockWalletOptions) {
+    private requestOptions: SigningRequestEncodingOptions
+    private abiCache = new Map<string, ABIDef>()
+    private pendingAbis = new Map<string, Promise<API.v1.GetAbiResponse>>()
+
+    constructor(options: MockWalletOptions = mockWalletConfig) {
         this.authorization = PermissionLevel.from(options.authorization)
         this.chainId = Checksum256.from(options.chainId)
         this.key = PrivateKey.from(options.key)
+        this.client = options.client
+        this.requestOptions = {
+            abiProvider: this,
+            zlib,
+        }
     }
 
     async resolveRequest(request: SigningRequest): Promise<ResolvedSigningRequest> {
         const abis = await request.fetchAbis()
-        return request.resolve(abis, this.authorization, {
+        const tapos = {
             expiration,
             ref_block_num: 0,
             ref_block_prefix: 0,
-        })
+        }
+        if (!request.isIdentity()) {
+            const info = await this.client.v1.chain.get_info()
+            const header = info.getTransactionHeader()
+            tapos.ref_block_num = header.ref_block_num.toNumber()
+            tapos.ref_block_prefix = header.ref_block_prefix.toNumber()
+        }
+        return request.resolve(abis, this.authorization, tapos)
     }
 
     signTransaction(transaction: Transaction): Signature {
@@ -53,18 +81,21 @@ export class MockWallet {
 
     async completeRequest(
         request: SigningRequest,
-        manager: AnchorLinkSessionManager
+        manager?: AnchorLinkSessionManager
     ): Promise<ResolvedSigningRequest> {
         const resolved = await this.resolveRequest(request)
         const signature = this.signTransaction(resolved.transaction)
         const callback = resolved.getCallback([signature])
         if (callback) {
-            const body = JSON.stringify({
-                ...callback.payload,
-                link_ch: `https://${manager.storage.linkUrl}/${manager.storage.linkId}`,
-                link_key: PrivateKey.from(manager.storage.requestKey).toPublic().toString(),
-                link_name: 'MockWallet',
-            })
+            let body = JSON.stringify(callback.payload)
+            if (manager && request.isIdentity()) {
+                body = JSON.stringify({
+                    ...callback.payload,
+                    link_ch: `https://${manager.storage.linkUrl}/${manager.storage.linkId}`,
+                    link_key: PrivateKey.from(manager.storage.requestKey).toPublic().toString(),
+                    link_name: 'MockWallet',
+                })
+            }
             await fetch(callback.url, {
                 method: 'post',
                 body,
@@ -73,5 +104,39 @@ export class MockWallet {
             throw new Error('callback was not resolved')
         }
         return resolved
+    }
+
+    getEventHandler = () => {
+        return {
+            onIncomingRequest: async (payload) => {
+                const request = SigningRequest.from(payload, this.requestOptions)
+                // console.log("event handler request", request)
+                const completed = await this.completeRequest(request)
+                // console.log("event handler completed", completed)
+                return completed
+            },
+        }
+    }
+
+    /**
+     * Fetch the ABI for given account, cached.
+     * @internal
+     */
+    public async getAbi(account: Name) {
+        const key = account.toString()
+        let rv = this.abiCache.get(key)
+        if (!rv) {
+            let getAbi = this.pendingAbis.get(key)
+            if (!getAbi) {
+                getAbi = this.client.v1.chain.get_abi(account)
+                this.pendingAbis.set(key, getAbi)
+            }
+            rv = (await getAbi).abi
+            this.pendingAbis.delete(key)
+            if (rv) {
+                this.abiCache.set(key, rv)
+            }
+        }
+        return rv as ABIDef
     }
 }

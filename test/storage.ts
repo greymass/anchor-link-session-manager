@@ -11,13 +11,7 @@ import {
     AnchorLinkSessionManagerStorageOptions,
 } from '../src/storage'
 
-const mockSession = {
-    network: '2a02a0053e5a8cf73a56ba0fda11e4d92e0238a4a2aa74fccf46d5a910746840',
-    account: 'teamgreymass',
-    permission: 'active',
-    publicKey: 'PUB_K1_6RrvujLQN1x5Tacbep1KAk8zzKpSThAQXBCKYFfGUYeACcSRFs',
-    name: 'testsession',
-}
+import {mockEventHandler, mockSession} from './utils/mock-data'
 
 const mockStorageOptions: AnchorLinkSessionManagerStorageOptions = {
     linkId: uuid(),
@@ -36,10 +30,12 @@ suite('storage', function () {
     })
 
     test('add session', function () {
-        const manager = new AnchorLinkSessionManager()
+        const manager = new AnchorLinkSessionManager({
+            handler: mockEventHandler,
+        })
         const session = new AnchorLinkSessionManagerSession(
             mockSession.network,
-            mockSession.account,
+            mockSession.actor,
             mockSession.permission,
             mockSession.publicKey,
             mockSession.name
@@ -48,22 +44,24 @@ suite('storage', function () {
         assert.equal(manager.storage.sessions.length, 1)
         const matching = manager.storage.sessions.find(
             (session) =>
-                session.account.network.toString() === mockSession.network &&
-                session.account.name.toString() === mockSession.account &&
-                session.account.permission.toString() === mockSession.permission &&
-                session.account.publicKey.toString() === mockSession.publicKey &&
+                session.network.toString() === mockSession.network &&
+                session.actor.toString() === mockSession.actor &&
+                session.permission.toString() === mockSession.permission &&
+                session.publicKey.toString() === mockSession.publicKey &&
                 session.name.toString() === mockSession.name
         )
         assert.equal(matching !== undefined, true)
     })
 
     test('add/remove sessions', function () {
-        const manager = new AnchorLinkSessionManager()
+        const manager = new AnchorLinkSessionManager({
+            handler: mockEventHandler,
+        })
         assert.equal(manager.storage.sessions.length, 0)
 
         const session1 = new AnchorLinkSessionManagerSession(
             mockSession.network,
-            mockSession.account,
+            mockSession.actor,
             mockSession.permission,
             mockSession.publicKey,
             'testsession1'
@@ -73,7 +71,7 @@ suite('storage', function () {
 
         const session2 = new AnchorLinkSessionManagerSession(
             mockSession.network,
-            mockSession.account,
+            mockSession.actor,
             mockSession.permission,
             mockSession.publicKey,
             'testsession2'
@@ -89,10 +87,12 @@ suite('storage', function () {
     })
 
     test('get session returns match', function () {
-        const manager = new AnchorLinkSessionManager()
+        const manager = new AnchorLinkSessionManager({
+            handler: mockEventHandler,
+        })
         const session = new AnchorLinkSessionManagerSession(
             mockSession.network,
-            mockSession.account,
+            mockSession.actor,
             mockSession.permission,
             mockSession.publicKey,
             mockSession.name
@@ -101,27 +101,31 @@ suite('storage', function () {
         assert.equal(manager.storage.sessions.length, 1)
         const matching = manager.getSession(
             mockSession.network,
-            mockSession.account,
+            mockSession.actor,
             mockSession.permission
         )
         assert.equal(matching === session, true)
     })
 
     test('get session returns undefined', function () {
-        const manager = new AnchorLinkSessionManager()
+        const manager = new AnchorLinkSessionManager({
+            handler: mockEventHandler,
+        })
         const matching = manager.getSession(
             mockSession.network,
-            mockSession.account,
+            mockSession.actor,
             mockSession.permission
         )
         assert.equal(undefined === matching, true)
     })
 
     test('clear sessions', function () {
-        const manager = new AnchorLinkSessionManager()
+        const manager = new AnchorLinkSessionManager({
+            handler: mockEventHandler,
+        })
         const session1 = new AnchorLinkSessionManagerSession(
             mockSession.network,
-            mockSession.account,
+            mockSession.actor,
             mockSession.permission,
             mockSession.publicKey,
             'testsession1'
@@ -129,7 +133,7 @@ suite('storage', function () {
         manager.addSession(session1)
         const session2 = new AnchorLinkSessionManagerSession(
             mockSession.network,
-            mockSession.account,
+            mockSession.actor,
             mockSession.permission,
             mockSession.publicKey,
             'testsession2'

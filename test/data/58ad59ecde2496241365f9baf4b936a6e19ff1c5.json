@@ -1,25 +1,25 @@
 {
-    "account_name": "ihasnocpunet",
-    "head_block_num": 31071462,
-    "head_block_time": "2020-08-17T18:25:40.500",
+    "account_name": "greymassaaaa",
+    "head_block_num": 31252983,
+    "head_block_time": "2020-08-18T19:38:26.000",
     "privileged": false,
     "last_code_update": "1970-01-01T00:00:00.000",
-    "created": "2020-06-16T17:03:37.500",
-    "core_liquid_balance": "0.9998 EOS",
-    "ram_quota": 4892,
-    "net_weight": 1,
-    "cpu_weight": 0,
+    "created": "2020-06-11T21:54:50.500",
+    "core_liquid_balance": "97.9388 EOS",
+    "ram_quota": 61261,
+    "net_weight": 510000,
+    "cpu_weight": 510001,
     "net_limit": {
-        "used": 0,
-        "available": 3,
-        "max": 3
+        "used": 129,
+        "available": 1990775,
+        "max": 1990904
     },
     "cpu_limit": {
-        "used": 0,
-        "available": 0,
-        "max": 0
+        "used": 123,
+        "available": 1516461,
+        "max": 1516584
     },
-    "ram_usage": 3574,
+    "ram_usage": 3736,
     "permissions": [
         {
             "perm_name": "active",
@@ -29,6 +29,10 @@
                 "keys": [
                     {
                         "key": "PUB_K1_827seuYHcvyWVH8DenGmKuWsfxCTZ9oqVrZAWbm81VUu36SVAe",
+                        "weight": 1
+                    },
+                    {
+                        "key": "EOS7jVozbckHi3KrkUq8yL2nttf5MWLsu2EUrBdY8x8c3ih5nqB1N",
                         "weight": 1
                     }
                 ],
@@ -43,7 +47,7 @@
                 "threshold": 1,
                 "keys": [
                     {
-                        "key": "PUB_K1_827seuYHcvyWVH8DenGmKuWsfxCTZ9oqVrZAWbm81VUu36SVAe",
+                        "key": "EOS7jVozbckHi3KrkUq8yL2nttf5MWLsu2EUrBdY8x8c3ih5nqB1N",
                         "weight": 1
                     }
                 ],
@@ -53,24 +57,24 @@
         }
     ],
     "total_resources": {
-        "owner": "ihasnocpunet",
-        "net_weight": "0.0001 EOS",
-        "cpu_weight": "0.0000 EOS",
-        "ram_bytes": 3492
+        "owner": "greymassaaaa",
+        "net_weight": "51.0000 EOS",
+        "cpu_weight": "51.0001 EOS",
+        "ram_bytes": 59861
     },
     "self_delegated_bandwidth": {
-        "from": "ihasnocpunet",
-        "to": "ihasnocpunet",
-        "net_weight": "0.0001 EOS",
-        "cpu_weight": "0.0000 EOS"
+        "from": "greymassaaaa",
+        "to": "greymassaaaa",
+        "net_weight": "50.0000 EOS",
+        "cpu_weight": "50.0001 EOS"
     },
     "refund_request": null,
     "voter_info": {
-        "owner": "ihasnocpunet",
+        "owner": "greymassaaaa",
         "proxy": "waaaaaaaaaat",
         "producers": [],
-        "staked": 1,
-        "last_vote_weight": "1543412.54618006339296699",
+        "staked": 1000001,
+        "last_vote_weight": "1543414089592.60961914062500000",
         "proxied_vote_weight": "0.00000000000000000",
         "is_proxy": 0,
         "flags1": 0,
