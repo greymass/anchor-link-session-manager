@@ -109,11 +109,13 @@ export class MockWallet implements AbiProvider {
     getEventHandler = () => {
         return {
             onIncomingRequest: async (payload) => {
+                console.log('incoming request', payload)
                 const request = SigningRequest.from(payload, this.requestOptions)
-                // console.log("event handler request", request)
                 const completed = await this.completeRequest(request)
-                // console.log("event handler completed", completed)
                 return completed
+            },
+            onStorageUpdate: (storage) => {
+                console.log('saving storage', storage)
             },
         }
     }

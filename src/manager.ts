@@ -22,6 +22,7 @@ export interface AnchorLinkSessionManagerOptions {
 
 export interface AnchorLinkSessionManagerEventHander {
     onIncomingRequest(payload: string)
+    onStorageUpdate(storage: string)
 }
 
 export class AnchorLinkSessionManager {
@@ -43,11 +44,13 @@ export class AnchorLinkSessionManager {
                 requestKey: PrivateKey.generate('K1').toWif(),
                 sessions: [],
             })
+            this.handler.onStorageUpdate(this.storage.serialize())
         }
     }
 
     addSession(session: AnchorLinkSessionManagerSession) {
         this.storage.add(session)
+        this.handler.onStorageUpdate(this.storage.serialize())
     }
 
     getSession(
@@ -64,14 +67,17 @@ export class AnchorLinkSessionManager {
 
     clearSessions() {
         this.storage.clear()
+        this.handler.onStorageUpdate(this.storage.serialize())
     }
 
     removeSession(session: AnchorLinkSessionManagerSession) {
         this.storage.remove(session)
+        this.handler.onStorageUpdate(this.storage.serialize())
     }
 
     save() {
         // NYI
+        this.handler.onStorageUpdate(this.storage.serialize())
     }
 
     connect(): Promise<WebSocket> {
@@ -86,7 +92,11 @@ export class AnchorLinkSessionManager {
                 resolve(this.socket)
             }
             socket.onmessage = (message: any) => {
-                this.handleRequest(message.data)
+                try {
+                    this.handleRequest(message.data)
+                } catch (e) {
+                    reject(e)
+                }
             }
             socket.onerror = function (err) {
                 this.connecting = false

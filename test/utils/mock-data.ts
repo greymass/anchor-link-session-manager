@@ -11,7 +11,10 @@ const client = new APIClient({
 
 export const mockEventHandler: AnchorLinkSessionManagerEventHander = {
     onIncomingRequest: (payload) => {
-        console.log('MockEventHandler.onIncomingRequest', payload)
+        // console.log('MockEventHandler.onIncomingRequest', payload)
+    },
+    onStorageUpdate: (storage) => {
+        // console.log('MockEventHandler.onStorageUpdate', storage)
     },
 }
 

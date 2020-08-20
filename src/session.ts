@@ -7,8 +7,21 @@ import {
     PublicKeyType,
 } from '@greymass/eosio'
 import {LoginResult} from 'anchor-link'
+import {SigningRequest} from 'eosio-signing-request'
+import zlib from 'pako'
 
 import {LinkCreate} from './link-types'
+
+export interface ZlibProvider {
+    deflateRaw: (data: Uint8Array) => Uint8Array
+    inflateRaw: (data: Uint8Array) => Uint8Array
+}
+
+export interface IdentityRequestOptions {
+    textEncoder?: TextEncoder
+    textDecoder?: TextDecoder
+    zlib?: ZlibProvider
+}
 
 export class AnchorLinkSessionManagerSession {
     public actor!: Name
@@ -27,8 +40,40 @@ export class AnchorLinkSessionManagerSession {
         this.network = Checksum256.from(network)
         this.actor = Name.from(actor)
         this.permission = Name.from(permission)
-        this.name = Name.from(name)
         this.publicKey = PublicKey.from(publicKey)
+        this.name = Name.from(name)
+    }
+
+    public static fromIdentityRequest(
+        network: Checksum256Type,
+        actor: NameType,
+        permission: NameType,
+        payload: string,
+        options: IdentityRequestOptions = {}
+    ) {
+        const requestOptions = {
+            textDecoder: options.textDecoder || new TextDecoder(),
+            textEncoder: options.textEncoder || new TextEncoder(),
+            zlib: options.zlib || zlib,
+        }
+
+        const request = SigningRequest.from(payload, requestOptions)
+        if (!request.isIdentity()) {
+            throw new Error('supplied request is not an identity request')
+        }
+
+        const linkInfo = request.getInfoKey('link', LinkCreate)
+        if (!linkInfo) {
+            throw new Error('identity request does not contain link information')
+        }
+
+        return new AnchorLinkSessionManagerSession(
+            network,
+            actor,
+            permission,
+            linkInfo['request_key'].toString(),
+            linkInfo['session_name'].toString()
+        )
     }
 
     public static fromLoginResult(result: LoginResult): AnchorLinkSessionManagerSession {

@@ -48,12 +48,33 @@ export class AnchorLinkSessionManagerStorage {
         this.sessions = this.sessions.filter(
             (s) =>
                 !(
-                    session.name === s.name &&
-                    session.publicKey === s.publicKey &&
-                    session.network === s.network &&
-                    session.actor === s.actor &&
-                    session.permission === s.permission
+                    session.name.toString() === s.name.toString() &&
+                    session.publicKey.toString() === s.publicKey.toString() &&
+                    session.network.toString() === s.network.toString() &&
+                    session.actor.toString() === s.actor.toString() &&
+                    session.permission.toString() === s.permission.toString()
                 )
         )
+    }
+
+    public serialize(): string {
+        return JSON.stringify(this)
+    }
+
+    public static unserialize(raw: string): AnchorLinkSessionManagerStorage {
+        const data = JSON.parse(raw)
+        return new AnchorLinkSessionManagerStorage({
+            ...data,
+            sessions: data.sessions.map(
+                (s) =>
+                    new AnchorLinkSessionManagerSession(
+                        s.network,
+                        s.actor,
+                        s.permission,
+                        s.publicKey,
+                        s.name
+                    )
+            ),
+        })
     }
 }

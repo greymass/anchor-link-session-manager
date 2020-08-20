@@ -14,6 +14,6 @@ export class MockTransport implements LinkTransport {
     }
 
     async onRequest(request: SigningRequest) {
-        this.wallet.completeRequest(request, this.manager)
+        await this.wallet.completeRequest(request, this.manager)
     }
 }

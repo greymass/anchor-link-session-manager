@@ -72,7 +72,13 @@ suite('anchor-link', function () {
         // ensure login processed and returned identity
         assert.equal(response.payload.sa, wallet.authorization.actor)
         assert.equal(response.payload.sp, wallet.authorization.permission)
-        manager.addSession(AnchorLinkSessionManagerSession.fromLoginResult(response))
+        const session = AnchorLinkSessionManagerSession.fromIdentityRequest(
+            wallet.chainId,
+            response.payload.sa,
+            response.payload.sp,
+            response.request.toString()
+        )
+        manager.addSession(session)
         // ensure it was added
         assert.equal(manager.storage.sessions.length, 1)
         // retrieve session from manager and ensure it exists
@@ -97,7 +103,7 @@ suite('anchor-link', function () {
         const response = await link.login('anchor-link-session-manager')
         manager.addSession(AnchorLinkSessionManagerSession.fromLoginResult(response))
         // perform the transaction
-        return response.session.transact(transaction, {broadcast: false})
+        await response.session.transact(transaction, {broadcast: false})
     })
 
     test('transact rejects unknown session', async () => {

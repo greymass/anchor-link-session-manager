@@ -86,6 +86,27 @@ suite('storage', function () {
         assert.equal(manager.storage.sessions.length, 0)
     })
 
+    test('remove based on unserialized', function () {
+        const manager = new AnchorLinkSessionManager({
+            handler: mockEventHandler,
+        })
+        assert.equal(manager.storage.sessions.length, 0)
+
+        const session1 = new AnchorLinkSessionManagerSession(
+            mockSession.network,
+            mockSession.actor,
+            mockSession.permission,
+            mockSession.publicKey,
+            'testsession1'
+        )
+        manager.addSession(session1)
+
+        const serialized = manager.storage.serialize()
+        const newStorage = AnchorLinkSessionManagerStorage.unserialize(serialized)
+        manager.removeSession(newStorage.sessions[0])
+        assert.equal(manager.storage.sessions.length, 0)
+    })
+
     test('get session returns match', function () {
         const manager = new AnchorLinkSessionManager({
             handler: mockEventHandler,
@@ -142,5 +163,32 @@ suite('storage', function () {
         assert.equal(manager.storage.sessions.length, 2)
         manager.clearSessions()
         assert.equal(manager.storage.sessions.length, 0)
+    })
+
+    test('to/from json', function () {
+        const manager = new AnchorLinkSessionManager({
+            handler: mockEventHandler,
+        })
+        const session = new AnchorLinkSessionManagerSession(
+            mockSession.network,
+            mockSession.actor,
+            mockSession.permission,
+            mockSession.publicKey,
+            mockSession.name
+        )
+        manager.addSession(session)
+        assert.equal(manager.storage.sessions.length, 1)
+        assert.equal(JSON.stringify(manager.storage), manager.storage.serialize())
+        const storage = AnchorLinkSessionManagerStorage.unserialize(manager.storage.serialize())
+        assert.equal(storage.linkId, manager.storage.linkId)
+        assert.equal(storage.linkUrl, manager.storage.linkUrl)
+        assert.equal(storage.requestKey, manager.storage.requestKey)
+        storage.sessions.forEach((v, k) => {
+            assert.equal(v.network.toString(), manager.storage.sessions[k].network.toString())
+            assert.equal(v.actor.toString(), manager.storage.sessions[k].actor.toString())
+            assert.equal(v.permission.toString(), manager.storage.sessions[k].permission.toString())
+            assert.equal(v.publicKey.toString(), manager.storage.sessions[k].publicKey.toString())
+            assert.equal(v.name.toString(), manager.storage.sessions[k].name.toString())
+        })
     })
 })
