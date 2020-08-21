@@ -91,8 +91,8 @@ suite('anchor-link', function () {
         // check return values
         if (returned) {
             assert.equal(returned.network.toString(), wallet.chainId.toString())
-            assert.equal(returned.actor, response.session.auth.actor)
-            assert.equal(returned.permission, response.session.auth.permission)
+            assert.equal(returned.actor.toString(), response.session.auth.actor.toString())
+            assert.equal(returned.permission.toString(), response.session.auth.permission.toString())
         }
     })
 

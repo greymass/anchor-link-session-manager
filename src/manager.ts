@@ -28,13 +28,16 @@ export interface AnchorLinkSessionManagerEventHander {
 export class AnchorLinkSessionManager {
     public ready = false
     public connecting = false
+    public retries: number
     public storage: AnchorLinkSessionManagerStorage
 
     private handler: AnchorLinkSessionManagerEventHander
+    private retry: any
     private socket: WebSocket
 
     constructor(options: AnchorLinkSessionManagerOptions) {
         this.handler = options.handler
+        this.retries = 0
         if (options && options.storage) {
             this.storage = options.storage
         } else {
@@ -81,33 +84,45 @@ export class AnchorLinkSessionManager {
     }
 
     connect(): Promise<WebSocket> {
+        const manager = this
         this.connecting = true
         this.ready = false
         return new Promise((resolve, reject) => {
             const linkUrl = `wss://${this.storage.linkUrl}/${this.storage.linkId}`
             const socket = new WebSocket(linkUrl)
             socket.onopen = () => {
-                this.connecting = false
-                this.ready = true
-                resolve(this.socket)
+                manager.connecting = false
+                manager.ready = true
+                manager.retries = 0
+                resolve(manager.socket)
             }
             socket.onmessage = (message: any) => {
                 try {
-                    this.handleRequest(message.data)
+                    manager.handleRequest(message.data)
                 } catch (e) {
                     reject(e)
                 }
             }
             socket.onerror = function (err) {
-                this.connecting = false
-                this.ready = false
+                manager.ready = false
                 reject(err)
             }
-            this.socket = socket
+            socket.onclose = function(event) {
+                manager.connecting = false
+                if (event.code !== 1000) {
+                    const wait = backoff(manager.retries)
+                    manager.retry = setTimeout(() => {
+                        manager.retries++
+                        manager.connect()
+                    }, wait)
+                }
+            }
+            manager.socket = socket
         })
     }
 
     disconnect() {
+        clearTimeout(this.retry)
         this.connecting = false
         this.ready = false
         this.socket.close(1000)
@@ -139,4 +154,8 @@ export class AnchorLinkSessionManager {
         // Return the unsealed message
         return unsealed
     }
+}
+
+function backoff(n) {
+    return Math.min(Math.pow(n * 100, 2) / 1000, 5000)
 }
