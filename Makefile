@@ -14,7 +14,7 @@ $(LIB_FILES): $(SRC_FILES) lib node_modules tsconfig.json
 
 .PHONY: test
 test: node_modules
-	@mocha -u tdd -r ts-node/register --extension ts test/*.ts --grep '$(grep)'
+	@mocha -u tdd -r ts-node/register --extension ts test/*.ts --timeout 10000 --grep '$(grep)' --exit
 
 .PHONY: coverage
 coverage: node_modules
