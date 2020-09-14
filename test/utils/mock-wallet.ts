@@ -117,6 +117,9 @@ export class MockWallet implements AbiProvider {
             onStorageUpdate: (storage) => {
                 console.log('saving storage', storage)
             },
+            onSocketEvent: (type, event) => {
+                console.log(type, event)
+            }
         }
     }
 

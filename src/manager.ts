@@ -23,6 +23,7 @@ export interface AnchorLinkSessionManagerOptions {
 export interface AnchorLinkSessionManagerEventHander {
     onIncomingRequest(payload: string)
     onStorageUpdate(storage: string)
+    onSocketEvent?(type: string, event: any)
 }
 
 export class AnchorLinkSessionManager {
@@ -90,13 +91,19 @@ export class AnchorLinkSessionManager {
         return new Promise((resolve, reject) => {
             const linkUrl = `wss://${this.storage.linkUrl}/${this.storage.linkId}`
             const socket = new WebSocket(linkUrl)
-            socket.onopen = () => {
+            socket.onopen = (event) => {
+                if (this.handler && this.handler.onSocketEvent) {
+                    this.handler.onSocketEvent("onopen", event)
+                }
                 manager.connecting = false
                 manager.ready = true
                 manager.retries = 0
                 resolve(manager.socket)
             }
             socket.onmessage = (message: any) => {
+                if (this.handler && this.handler.onSocketEvent) {
+                    this.handler.onSocketEvent("onmessage", message)
+                }
                 try {
                     manager.handleRequest(message.data)
                 } catch (e) {
@@ -104,11 +111,19 @@ export class AnchorLinkSessionManager {
                 }
             }
             socket.onerror = function (err) {
+                if (this.handler && this.handler.onSocketEvent) {
+                    this.handler.onSocketEvent("onerror", err)
+                }
                 manager.ready = false
                 reject(err)
             }
             socket.onclose = function(event) {
+                if (this.handler && this.handler.onSocketEvent) {
+                    this.handler.onSocketEvent("onclose", event)
+                }
+                // add variable about whether this is enabled beyond connecting
                 manager.connecting = false
+                // this error code is potentially the problem with the connects
                 if (event.code !== 1000) {
                     const wait = backoff(manager.retries)
                     manager.retry = setTimeout(() => {
