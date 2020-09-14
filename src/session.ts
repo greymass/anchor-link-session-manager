@@ -63,7 +63,7 @@ export class AnchorLinkSessionManagerSession {
         }
 
         const linkInfo = request.getInfoKey('link', LinkCreate)
-        if (!linkInfo) {
+        if (!linkInfo || !linkInfo['request_key'] || !linkInfo['session_name']) {
             throw new Error('identity request does not contain link information')
         }
 
@@ -71,21 +71,21 @@ export class AnchorLinkSessionManagerSession {
             network,
             actor,
             permission,
-            linkInfo['request_key'].toString(),
-            linkInfo['session_name'].toString()
+            String(linkInfo['request_key']),
+            String(linkInfo['session_name']),
         )
     }
 
     public static fromLoginResult(result: LoginResult): AnchorLinkSessionManagerSession {
         const linkInfo = result.request.getInfoKey('link', LinkCreate)
-        if (!linkInfo) {
+        if (!linkInfo || !linkInfo['request_key']) {
             throw new Error('identity request does not contain link information')
         }
         return new AnchorLinkSessionManagerSession(
             result.request.getChainId(),
             result.session.auth.actor,
             result.session.auth.permission,
-            linkInfo['request_key'].toString(),
+            String(linkInfo['request_key']),
             result.session.identifier
         )
     }
