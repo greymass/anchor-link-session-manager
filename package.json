@@ -15,8 +15,8 @@
         "prepare": "make -j4"
     },
     "dependencies": {
-        "@greymass/eosio": "^0.0.3",
-        "eosio-signing-request": "^2.0.0-beta5",
+        "@greymass/eosio": "^0.0.4",
+        "eosio-signing-request": "2.0.0-beta6",
         "isomorphic-ws": "^4.0.1",
         "pako": "^1.0.11",
         "uuid": "^8.3.0"
@@ -27,7 +27,7 @@
         "@types/websocket": "^1.0.1",
         "@typescript-eslint/eslint-plugin": "^3.9.0",
         "@typescript-eslint/parser": "^3.9.0",
-        "anchor-link": "^3.0.0-beta6",
+        "anchor-link": "3.0.0-beta8",
         "assert": "^2.0.0",
         "eslint": "^7.5.0",
         "eslint-config-prettier": "^6.11.0",

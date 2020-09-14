@@ -902,10 +902,10 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@greymass/eosio@0.0.3", "@greymass/eosio@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@greymass/eosio/-/eosio-0.0.3.tgz#62d1521dc0d40fdc391ae44ba8722fca908b84f4"
-  integrity sha512-M0I32H9OHiz91Ubke+2SqxFUx4Uzd/mjabc1s5WwM8/jUtAH3l5DsmWb6kmr3sr3hH6H1kjiVNE8SNMg/BUqgQ==
+"@greymass/eosio@0.0.4", "@greymass/eosio@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@greymass/eosio/-/eosio-0.0.4.tgz#af7fc2d3295cc5c243ac113dbfc9ff513d1b2448"
+  integrity sha512-jlMIJygiUiu4yWnFK192Ek0tx5V+X4aZ9If4rxc4BSLNak+IQeifo/5KjLuehQzwO82g6CsUPMQKHN3Y+WPKxg==
   dependencies:
     bn.js "^4.4.0"
     elliptic "^6.5.2"
@@ -1139,14 +1139,14 @@ alphanum-sort@^1.0.0:
   resolved "https://registry.yarnpkg.com/alphanum-sort/-/alphanum-sort-1.0.2.tgz#97a1119649b211ad33691d9f9f486a8ec9fbe0a3"
   integrity sha1-l6ERlkmyEa0zaR2fn0hqjsn74KM=
 
-anchor-link@^3.0.0-beta6:
-  version "3.0.0-beta6"
-  resolved "https://registry.yarnpkg.com/anchor-link/-/anchor-link-3.0.0-beta6.tgz#b49e6044fa93a4eab53d89900162d07b4cd1aa7e"
-  integrity sha512-fYCZCks0UOVidP14USmqTwOz3z2AgOyA0cCAMnJ0TDrGtrr0CUP+eZ5wEeixDFjsuNBoaRo03/7glmtNE4g/wA==
+anchor-link@3.0.0-beta8:
+  version "3.0.0-beta8"
+  resolved "https://registry.yarnpkg.com/anchor-link/-/anchor-link-3.0.0-beta8.tgz#8bbd8ef9aaa1028da4cd25cc3e94e6a672978a89"
+  integrity sha512-qQXQoyLBEEvYHuy6+JZUSrM5+XHQ4O+bIMLhfCHvGQEIqs53NjF4gX4x5VdiVzfp5MPmMKAPBraaFfdsj8x1uQ==
   dependencies:
-    "@greymass/eosio" "0.0.3"
+    "@greymass/eosio" "0.0.4"
     asmcrypto.js "^2.3.2"
-    eosio-signing-request "^2.0.0-beta5"
+    eosio-signing-request "2.0.0-beta6"
     fetch-ponyfill "^6.1.0"
     isomorphic-ws "^4.0.1"
     pako "^1.0.10"
@@ -1923,12 +1923,12 @@ entities@^2.0.0:
   resolved "https://registry.yarnpkg.com/entities/-/entities-2.0.3.tgz#5c487e5742ab93c15abb5da22759b8590ec03b7f"
   integrity sha512-MyoZ0jgnLvB2X3Lg5HqpFmn1kybDiIfEQmKzTb5apr51Rb+T3KdmMiqa70T+bhGnyv7bQ6WMj2QMHpGMmlrUYQ==
 
-eosio-signing-request@^2.0.0-beta5:
-  version "2.0.0-beta5"
-  resolved "https://registry.yarnpkg.com/eosio-signing-request/-/eosio-signing-request-2.0.0-beta5.tgz#8eca40c19d02e5652839ee2789484cc0af5fbc84"
-  integrity sha512-t5CPk8SOXVF0L0Wj44NaSAD+OAgOBtAaiqV4aY4r9+wqJildc5YOGzoK3iVDNF+X+rqgYuYBXO6yjI887v3ELw==
+eosio-signing-request@2.0.0-beta6:
+  version "2.0.0-beta6"
+  resolved "https://registry.yarnpkg.com/eosio-signing-request/-/eosio-signing-request-2.0.0-beta6.tgz#2483d252067414827e436e42ac90b540a3bc01ed"
+  integrity sha512-QgAeqnrwAJZw2+OJRpSWirW5C16hX033Tpt3le4uG0gJhoM+ewTnpB7QALch/pkT7HI55fUWGBamJ8ZwsYGtVA==
   dependencies:
-    "@greymass/eosio" "0.0.3"
+    "@greymass/eosio" "^0.0.4"
 
 error-ex@^1.3.1:
   version "1.3.2"
