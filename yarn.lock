@@ -911,6 +911,15 @@
     elliptic "^6.5.2"
     hash.js "^1.0.0"
 
+"@greymass/eosio@0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@greymass/eosio/-/eosio-0.0.7.tgz#a6bac7136c66cd3189c67661016eea07196b8d7a"
+  integrity sha512-bxsRnV/DvirhkACLTlZ0SaNOJyhJGJgwSsv6P+qBGTkNTBXvXUkJNfsNVua1HrmhxRw8KWi4jQkC5o8U0bNBSg==
+  dependencies:
+    bn.js "^4.4.0"
+    elliptic "^6.5.2"
+    hash.js "^1.0.0"
+
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@istanbuljs/load-nyc-config/-/load-nyc-config-1.1.0.tgz#fd3db1d59ecf7cf121e80650bb86712f9b55eced"

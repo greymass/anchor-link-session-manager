@@ -15,7 +15,7 @@
         "prepare": "make -j4"
     },
     "dependencies": {
-        "@greymass/eosio": "0.0.6",
+        "@greymass/eosio": "0.0.7",
         "eosio-signing-request": "^2.0.0-beta8",
         "isomorphic-ws": "^4.0.1",
         "pako": "^1.0.11",
