@@ -140,7 +140,7 @@ export class AnchorLinkSessionManager {
                 }, wait)
             }
             socket.on('ping', (event) => {
-                if (this.handler && this.handler.onPing) {
+                if (this.handler && this.handler.onSocketEvent) {
                     this.handler.onSocketEvent("onping", event)
                 }
                 manager.heartbeat()

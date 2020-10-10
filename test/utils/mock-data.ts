@@ -17,7 +17,7 @@ export const mockEventHandler: AnchorLinkSessionManagerEventHander = {
         // console.log('MockEventHandler.onStorageUpdate', storage)
     },
     onSocketEvent: (type, message) => {
-        console.log(type, message)
+        // console.log(type, message)
     }
 }
 
