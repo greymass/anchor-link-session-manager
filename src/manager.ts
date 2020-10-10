@@ -124,7 +124,6 @@ export class AnchorLinkSessionManager {
                 }
             }
             socket.onerror = function (err) {
-                clearTimeout(this.pingTimeout);
                 if (this.handler && this.handler.onSocketEvent) {
                     this.handler.onSocketEvent("onerror", err)
                 }
