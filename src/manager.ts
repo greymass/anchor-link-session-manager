@@ -123,14 +123,11 @@ export class AnchorLinkSessionManager {
                 }
                 // add variable about whether this is enabled beyond connecting
                 manager.connecting = false
-                // this error code is potentially the problem with the connects
-                if (event.code !== 1000) {
-                    const wait = backoff(manager.retries)
-                    manager.retry = setTimeout(() => {
-                        manager.retries++
-                        manager.connect()
-                    }, wait)
-                }
+                const wait = backoff(manager.retries)
+                manager.retry = setTimeout(() => {
+                    manager.retries++
+                    manager.connect()
+                }, wait)
             }
             manager.socket = socket
         })
