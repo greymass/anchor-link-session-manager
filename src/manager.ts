@@ -81,15 +81,14 @@ export class AnchorLinkSessionManager {
     }
 
     save() {
-        // NYI
         this.handler.onStorageUpdate(this.storage.serialize())
     }
 
     heartbeat() {
-        clearTimeout(this.pingTimeout);
+        clearTimeout(this.pingTimeout)
         this.pingTimeout = setTimeout(() => {
-            this.socket.terminate();
-        }, 10000 + 1000);
+            this.socket.terminate()
+        }, 10000 + 1000)
     }
 
     connect(): Promise<WebSocket> {
@@ -109,10 +108,6 @@ export class AnchorLinkSessionManager {
                 manager.retries = 0
                 resolve(manager.socket)
             }
-            socket.on('ping', (event) => {
-                manager.heartbeat()
-                manager.socket.send('pong')
-            })
             socket.onmessage = (message: any) => {
                 if (this.handler && this.handler.onSocketEvent) {
                     this.handler.onSocketEvent("onmessage", message)
@@ -144,6 +139,10 @@ export class AnchorLinkSessionManager {
                     manager.connect()
                 }, wait)
             }
+            socket.on('ping', (event) => {
+                manager.heartbeat()
+                manager.socket.send('pong')
+            })
             manager.socket = socket
         })
     }
