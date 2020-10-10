@@ -29,6 +29,7 @@ export interface AnchorLinkSessionManagerEventHander {
 export class AnchorLinkSessionManager {
     public ready = false
     public connecting = false
+    public pingTimeout
     public retries: number
     public storage: AnchorLinkSessionManagerStorage
 
@@ -84,6 +85,13 @@ export class AnchorLinkSessionManager {
         this.handler.onStorageUpdate(this.storage.serialize())
     }
 
+    heartbeat() {
+        clearTimeout(this.pingTimeout);
+        this.pingTimeout = setTimeout(() => {
+            this.socket.terminate();
+        }, 10000 + 1000);
+    }
+
     connect(): Promise<WebSocket> {
         const manager = this
         this.connecting = true
@@ -96,10 +104,15 @@ export class AnchorLinkSessionManager {
                     this.handler.onSocketEvent("onopen", event)
                 }
                 manager.connecting = false
+                manager.heartbeat()
                 manager.ready = true
                 manager.retries = 0
                 resolve(manager.socket)
             }
+            socket.on('ping', (event) => {
+                manager.heartbeat()
+                manager.socket.send('pong')
+            })
             socket.onmessage = (message: any) => {
                 if (this.handler && this.handler.onSocketEvent) {
                     this.handler.onSocketEvent("onmessage", message)
@@ -111,10 +124,12 @@ export class AnchorLinkSessionManager {
                 }
             }
             socket.onerror = function (err) {
+                clearTimeout(this.pingTimeout);
                 if (this.handler && this.handler.onSocketEvent) {
                     this.handler.onSocketEvent("onerror", err)
                 }
                 manager.ready = false
+                clearInterval(manager.pingTimeout)
                 reject(err)
             }
             socket.onclose = function(event) {
@@ -126,6 +141,7 @@ export class AnchorLinkSessionManager {
                 const wait = backoff(manager.retries)
                 manager.retry = setTimeout(() => {
                     manager.retries++
+                    clearInterval(manager.pingTimeout)
                     manager.connect()
                 }, wait)
             }
