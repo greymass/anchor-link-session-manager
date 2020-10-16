@@ -123,8 +123,22 @@ export class AnchorLinkSessionManager {
                     this.handler.onSocketEvent("onerror", err)
                 }
                 manager.ready = false
-                clearInterval(manager.pingTimeout)
-                reject(err)
+                switch (err.code){
+                    case 'ECONNREFUSED': {
+                        const wait = backoff(manager.retries)
+                        manager.retry = setTimeout(() => {
+                            manager.retries++
+                            clearInterval(manager.pingTimeout)
+                            manager.connect()
+                        }, wait)
+                        break;
+                    }
+                    default: {
+                        clearInterval(manager.pingTimeout)
+                        reject(err)
+                        break;
+                    }
+                }
             }
             socket.onclose = function(event) {
                 if (this.handler && this.handler.onSocketEvent) {
@@ -132,12 +146,14 @@ export class AnchorLinkSessionManager {
                 }
                 // add variable about whether this is enabled beyond connecting
                 manager.connecting = false
-                const wait = backoff(manager.retries)
-                manager.retry = setTimeout(() => {
-                    manager.retries++
-                    clearInterval(manager.pingTimeout)
-                    manager.connect()
-                }, wait)
+                if (event.code !== 1000) {
+                    const wait = backoff(manager.retries)
+                    manager.retry = setTimeout(() => {
+                        manager.retries++
+                        clearInterval(manager.pingTimeout)
+                        manager.connect()
+                    }, wait)
+                }
             }
             socket.on('ping', (event) => {
                 if (this.handler && this.handler.onSocketEvent) {
