@@ -1,7 +1,7 @@
 {
     "name": "@greymass/anchor-link-session-manager",
     "description": "Session management for signature providers when receiving requests using the Anchor Link protocol",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "license": "BSD-3-Clause",
     "main": "lib/index.js",
     "module": "lib/index.m.js",
@@ -15,8 +15,8 @@
         "prepare": "make -j4"
     },
     "dependencies": {
-        "@greymass/eosio": "0.0.7",
-        "eosio-signing-request": "2.0.0-beta9",
+        "@greymass/eosio": "0.1.8",
+        "eosio-signing-request": "2.0.0-rc.1",
         "isomorphic-ws": "^4.0.1",
         "pako": "^1.0.11",
         "uuid": "^8.3.0"
@@ -27,7 +27,7 @@
         "@types/websocket": "^1.0.1",
         "@typescript-eslint/eslint-plugin": "^3.9.0",
         "@typescript-eslint/parser": "^3.9.0",
-        "anchor-link": "3.0.0-beta11",
+        "anchor-link": "3.0.0-rc.2",
         "assert": "^2.0.0",
         "eslint": "^7.5.0",
         "eslint-config-prettier": "^6.11.0",
