@@ -44,8 +44,8 @@ export class AnchorLinkSessionManagerSession {
         this.permission = Name.from(permission)
         this.publicKey = PublicKey.from(publicKey)
         this.name = Name.from(name)
-        this.created = Date.now()
-        this.lastUsed = Date.now()
+        this.created = Date.now().toString()
+        this.lastUsed = Date.now().toString()
     }
 
     updateLastUsed(time: String) {
