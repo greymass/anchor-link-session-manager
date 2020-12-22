@@ -54,6 +54,7 @@ export class AnchorLinkSessionManager {
     }
 
     addSession(session: AnchorLinkSessionManagerSession) {
+        session.created =
         this.storage.add(session)
         this.handler.onStorageUpdate(this.storage.serialize())
     }
@@ -192,6 +193,8 @@ export class AnchorLinkSessionManager {
         if (!this.storage.has(message.from)) {
             throw new Error(`Unknown session using ${message.from}`)
         }
+
+
 
         // Fire callback for onIncomingRequest defined by client application
         this.handler.onIncomingRequest(unsealed)

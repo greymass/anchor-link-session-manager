@@ -36,6 +36,32 @@ export class AnchorLinkSessionManagerStorage {
         )
     }
 
+    public updateLastUsed(
+        publicKey: PublicKeyType
+    ): boolean {
+        const session = this.getByPublicKey(publicKey)
+
+        if (!session) {
+            return false;
+        }
+
+        this.remove(session);
+
+        session.updateLastUsed(Date.now());
+
+        this.add(session);
+
+        return true;
+    }
+
+    public getByPublicKey(
+        publicKey: PublicKeyType
+    ): AnchorLinkSessionManagerSession | undefined {
+        return this.sessions.find(
+            (s) => (publicKey.toString() === s.publicKey.toString())
+        )
+    }
+
     public has(publicKey: PublicKeyType): boolean {
         return this.sessions.some((s) => publicKey.toString() === s.publicKey.toString())
     }
