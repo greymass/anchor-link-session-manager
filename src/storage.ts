@@ -47,7 +47,7 @@ export class AnchorLinkSessionManagerStorage {
 
         this.remove(session);
 
-        session.updateLastUsed(Date.now().toString());
+        session.updateLastUsed(Date.now());
 
         this.add(session);
 

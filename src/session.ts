@@ -29,8 +29,8 @@ export class AnchorLinkSessionManagerSession {
     public name!: Name
     public network!: Checksum256
     public publicKey!: PublicKey
-    public created!: String
-    public lastUsed!: String
+    public created!: Number
+    public lastUsed!: Number
 
     constructor(
         network: Checksum256Type,
@@ -44,11 +44,11 @@ export class AnchorLinkSessionManagerSession {
         this.permission = Name.from(permission)
         this.publicKey = PublicKey.from(publicKey)
         this.name = Name.from(name)
-        this.created = Date.now().toString()
-        this.lastUsed = Date.now().toString()
+        this.created = Date.now()
+        this.lastUsed = Date.now()
     }
 
-    updateLastUsed(time: String) {
+    updateLastUsed(time: Number) {
         this.lastUsed = time;
     }
 
