@@ -37,15 +37,17 @@ export class AnchorLinkSessionManagerSession {
         actor: NameType,
         permission: NameType,
         publicKey: PublicKeyType,
-        name: NameType
+        name: NameType,
+        created: Number,
+        lastUsed: Number
     ) {
         this.network = Checksum256.from(network)
         this.actor = Name.from(actor)
         this.permission = Name.from(permission)
         this.publicKey = PublicKey.from(publicKey)
         this.name = Name.from(name)
-        this.created = Date.now()
-        this.lastUsed = Date.now()
+        this.created = created || Date.now()
+        this.lastUsed = lastUsed || Date.now()
     }
 
     updateLastUsed(time: Number) {

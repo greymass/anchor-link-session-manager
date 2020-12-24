@@ -98,7 +98,9 @@ export class AnchorLinkSessionManagerStorage {
                         s.actor,
                         s.permission,
                         s.publicKey,
-                        s.name
+                        s.name,
+                        s.created,
+                        s.lastUsed
                     )
             ),
         })
