@@ -38,8 +38,8 @@ export class AnchorLinkSessionManagerSession {
         permission: NameType,
         publicKey: PublicKeyType,
         name: NameType,
-        created: Number,
-        lastUsed: Number
+        created?: Number,
+        lastUsed?: Number
     ) {
         this.network = Checksum256.from(network)
         this.actor = Name.from(actor)
