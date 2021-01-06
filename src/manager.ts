@@ -6,6 +6,7 @@ import {
     Name,
     NameType,
     PrivateKey,
+    PublicKey,
     Serializer,
 } from '@greymass/eosio'
 import {v4 as uuid} from 'uuid'
@@ -84,10 +85,15 @@ export class AnchorLinkSessionManager {
         this.handler.onStorageUpdate(this.storage.serialize())
     }
 
+    updateLastUsed(publicKey: PublicKey) {
+        this.storage.updateLastUsed(publicKey);
+        this.handler.onStorageUpdate(this.storage.serialize())
+    }
+
     heartbeat() {
         clearTimeout(this.pingTimeout)
         this.pingTimeout = setTimeout(() => {
-            this.socket.terminate()
+            this.socket && this.socket.terminate()
         }, 10000 + 1000)
     }
 
@@ -192,6 +198,9 @@ export class AnchorLinkSessionManager {
         if (!this.storage.has(message.from)) {
             throw new Error(`Unknown session using ${message.from}`)
         }
+
+        // Updating session lastUsed timestamp
+        this.updateLastUsed(message.from);
 
         // Fire callback for onIncomingRequest defined by client application
         this.handler.onIncomingRequest(unsealed)
