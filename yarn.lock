@@ -192,18 +192,7 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@greymass/eosio@0.1.8":
-  version "0.1.8"
-  resolved "https://registry.yarnpkg.com/@greymass/eosio/-/eosio-0.1.8.tgz#be2794efebc2c0bed078a275e53dcc7929786ef3"
-  integrity sha512-OotCpFZjVUj/CKgY14M/5VsS2Na+lysNF4nThGqdVNAPO1CaSZUPLpPoVAdOKS0I6p0rBD3TxarPp2s8OdmR+Q==
-  dependencies:
-    bn.js "^4.4.0"
-    brorand "^1.0.1"
-    elliptic "^6.5.3"
-    hash.js "^1.0.0"
-    tslib "^2.0.3"
-
-"@greymass/eosio@^0.1.4", "@greymass/eosio@^0.1.5", "@greymass/eosio@^0.1.8":
+"@greymass/eosio@^0.1.4", "@greymass/eosio@^0.1.8", "@greymass/eosio@^0.1.9":
   version "0.1.9"
   resolved "https://registry.yarnpkg.com/@greymass/eosio/-/eosio-0.1.9.tgz#67ba38f94e69da71cf98bec1cf05ecae962f314e"
   integrity sha512-PgUh9gmbw0KHEubgjGl6q5pMzAbnZMinfAgGvEjfX5H+JP5b6584hI6Fla8Wr7XHDqibBhQyY4IP1nV7XWlRbA==
@@ -387,7 +376,7 @@ ajv@^7.0.2:
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
-anchor-link@3.0.0-rc:
+anchor-link@^3.0.0-rc:
   version "3.0.0-rc.3"
   resolved "https://registry.yarnpkg.com/anchor-link/-/anchor-link-3.0.0-rc.3.tgz#ad1c5e3d850ada2f31b6ab7c3aa9c1a5a1e65d57"
   integrity sha512-QT13JptJNbE3evIyUmX6KXi6e8av9byO51f/xKrAHbbJoVx94Dog+x0y0qWxD8GZNPTojqVO2KtNmcmSLvMCwQ==
@@ -772,14 +761,6 @@ enquirer@^2.3.5:
   integrity sha512-yjNnPr315/FjS4zIsUxYguYUPP2e1NK4d7E7ZOLiyYCcbFBiTMyID+2wvm2w6+pZ/odMA7cRkjhsPbltwBOrLg==
   dependencies:
     ansi-colors "^4.1.1"
-
-eosio-signing-request@2.0.0-rc.1:
-  version "2.0.0-rc.1"
-  resolved "https://registry.yarnpkg.com/eosio-signing-request/-/eosio-signing-request-2.0.0-rc.1.tgz#6ec559fdae0aafe712490cf0966486ad48f540c4"
-  integrity sha512-qY7X5PJBgLSJ91f4wTwhdOxiTHTuHtrgqHN+ySGW0PwTlAyOMRfSOXRw2KorKOwEoQ6dDB4gUfX6tu+D42wmMw==
-  dependencies:
-    "@greymass/eosio" "^0.1.5"
-    tslib "^2.0.3"
 
 eosio-signing-request@^2.0.0-rc:
   version "2.0.0-rc.2"
