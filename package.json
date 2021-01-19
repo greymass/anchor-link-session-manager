@@ -16,6 +16,7 @@
     },
     "dependencies": {
         "@greymass/eosio": "^0.1.9",
+        "asmcrypto.js": "^2.3.2",
         "eosio-signing-request": "^2.0.0-rc",
         "isomorphic-ws": "^4.0.1",
         "pako": "^1.0.11",
