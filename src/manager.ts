@@ -111,7 +111,6 @@ export class AnchorLinkSessionManager {
                 manager.connecting = false
                 manager.heartbeat()
                 manager.ready = true
-                manager.retries = 0
                 resolve(manager.socket)
             }
             socket.onmessage = (message: any) => {
@@ -157,11 +156,12 @@ export class AnchorLinkSessionManager {
                 }
                 // add variable about whether this is enabled beyond connecting
                 manager.connecting = false
-                if (event.code !== 1000) {
+                if (event.code !== 1000 && event.code !== 4001) {
                     const wait = backoff(manager.retries)
                     manager.retry = setTimeout(() => {
                         try {
                             manager.retries++
+                            manager.disconnect()
                             clearInterval(manager.pingTimeout)
                             manager.connect()
                         } catch (error) {
@@ -181,12 +181,13 @@ export class AnchorLinkSessionManager {
             })
             manager.socket = socket
         }).catch(error => {
-            console.log("SessionManager connect: caught error in promise", error.message, error.code)
+            console.log("SessionManager connect: caught error in promise", error.message, error.code, manager.retries)
         })
     }
 
     disconnect() {
         clearTimeout(this.retry)
+        clearTimeout(this.pingTimeout)
         this.connecting = false
         this.ready = false
         this.socket.close(1000)
