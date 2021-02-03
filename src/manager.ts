@@ -130,12 +130,17 @@ export class AnchorLinkSessionManager {
                 }
                 manager.ready = false
                 switch (err.code){
+                    case 'ENOTFOUND':
                     case 'ECONNREFUSED': {
                         const wait = backoff(manager.retries)
                         manager.retry = setTimeout(() => {
-                            manager.retries++
-                            clearInterval(manager.pingTimeout)
-                            manager.connect()
+                            try {
+                                manager.retries++
+                                clearInterval(manager.pingTimeout)
+                                manager.connect()
+                            } catch (error) {
+                                console.log("error caught", error)
+                            }
                         }, wait)
                         break;
                     }
@@ -155,13 +160,19 @@ export class AnchorLinkSessionManager {
                 if (event.code !== 1000) {
                     const wait = backoff(manager.retries)
                     manager.retry = setTimeout(() => {
-                        manager.retries++
-                        clearInterval(manager.pingTimeout)
-                        manager.connect()
+                        try {
+                            manager.retries++
+                            clearInterval(manager.pingTimeout)
+                            manager.connect()
+                        } catch (error) {
+                            console.log("error caught", error)
+                        }
                     }, wait)
                 }
             }
             socket.on('ping', (event) => {
+                // Reset retries on successful ping
+                manager.retries = 0
                 if (this.handler && this.handler.onSocketEvent) {
                     this.handler.onSocketEvent("onping", event)
                 }
@@ -169,6 +180,8 @@ export class AnchorLinkSessionManager {
                 manager.socket.send('pong')
             })
             manager.socket = socket
+        }).catch(error => {
+            console.log("SessionManager connect: caught error in promise", error.message, error.code)
         })
     }
 
