@@ -86,7 +86,7 @@ export class AnchorLinkSessionManager {
     }
 
     updateLastUsed(publicKey: PublicKey) {
-        this.storage.updateLastUsed(publicKey);
+        this.storage.updateLastUsed(publicKey)
         this.handler.onStorageUpdate(this.storage.serialize())
     }
 
@@ -106,7 +106,7 @@ export class AnchorLinkSessionManager {
             const socket = new WebSocket(linkUrl)
             socket.onopen = (event) => {
                 if (this.handler && this.handler.onSocketEvent) {
-                    this.handler.onSocketEvent("onopen", event)
+                    this.handler.onSocketEvent('onopen', event)
                 }
                 manager.connecting = false
                 manager.heartbeat()
@@ -115,7 +115,7 @@ export class AnchorLinkSessionManager {
             }
             socket.onmessage = (message: any) => {
                 if (this.handler && this.handler.onSocketEvent) {
-                    this.handler.onSocketEvent("onmessage", message)
+                    this.handler.onSocketEvent('onmessage', message)
                 }
                 try {
                     manager.handleRequest(message.data)
@@ -125,10 +125,10 @@ export class AnchorLinkSessionManager {
             }
             socket.onerror = function (err) {
                 if (this.handler && this.handler.onSocketEvent) {
-                    this.handler.onSocketEvent("onerror", err)
+                    this.handler.onSocketEvent('onerror', err)
                 }
                 manager.ready = false
-                switch (err.code){
+                switch (err.code) {
                     case 'ENOTFOUND':
                     case 'ECONNREFUSED': {
                         const wait = backoff(manager.retries)
@@ -138,21 +138,21 @@ export class AnchorLinkSessionManager {
                                 clearInterval(manager.pingTimeout)
                                 manager.connect()
                             } catch (error) {
-                                console.log("error caught", error)
+                                console.log('error caught', error)
                             }
                         }, wait)
-                        break;
+                        break
                     }
                     default: {
                         clearInterval(manager.pingTimeout)
                         reject(err)
-                        break;
+                        break
                     }
                 }
             }
-            socket.onclose = function(event) {
+            socket.onclose = function (event) {
                 if (this.handler && this.handler.onSocketEvent) {
-                    this.handler.onSocketEvent("onclose", event)
+                    this.handler.onSocketEvent('onclose', event)
                 }
                 // add variable about whether this is enabled beyond connecting
                 manager.connecting = false
@@ -165,7 +165,7 @@ export class AnchorLinkSessionManager {
                             clearInterval(manager.pingTimeout)
                             manager.connect()
                         } catch (error) {
-                            console.log("error caught", error)
+                            console.log('error caught', error)
                         }
                     }, wait)
                 }
@@ -174,14 +174,19 @@ export class AnchorLinkSessionManager {
                 // Reset retries on successful ping
                 manager.retries = 0
                 if (this.handler && this.handler.onSocketEvent) {
-                    this.handler.onSocketEvent("onping", event)
+                    this.handler.onSocketEvent('onping', event)
                 }
                 manager.heartbeat()
                 manager.socket.send('pong')
             })
             manager.socket = socket
-        }).catch(error => {
-            console.log("SessionManager connect: caught error in promise", error.message, error.code, manager.retries)
+        }).catch((error) => {
+            console.log(
+                'SessionManager connect: caught error in promise',
+                error.message,
+                error.code,
+                manager.retries
+            )
         })
     }
 
@@ -214,7 +219,7 @@ export class AnchorLinkSessionManager {
         }
 
         // Updating session lastUsed timestamp
-        this.updateLastUsed(message.from);
+        this.updateLastUsed(message.from)
 
         // Fire callback for onIncomingRequest defined by client application
         this.handler.onIncomingRequest(unsealed)
