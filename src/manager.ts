@@ -170,7 +170,7 @@ export class AnchorLinkSessionManager {
                     }, wait)
                 }
             }
-            socket.on('ping', (event) => {
+            socket.addEventListener('ping', (event) => {
                 // Reset retries on successful ping
                 manager.retries = 0
                 if (this.handler && this.handler.onSocketEvent) {
