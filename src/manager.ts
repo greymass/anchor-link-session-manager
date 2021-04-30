@@ -93,7 +93,7 @@ export class AnchorLinkSessionManager {
     heartbeat() {
         clearTimeout(this.pingTimeout)
         this.pingTimeout = setTimeout(() => {
-            this.socket && this.socket.terminate()
+            this.socket && this.socket.close()
         }, 10000 + 1000)
     }
 
