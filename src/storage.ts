@@ -36,30 +36,24 @@ export class AnchorLinkSessionManagerStorage {
         )
     }
 
-    public updateLastUsed(
-        publicKey: PublicKeyType
-    ): boolean {
+    public updateLastUsed(publicKey: PublicKeyType): boolean {
         const session = this.getByPublicKey(publicKey)
 
         if (!session) {
-            return false;
+            return false
         }
 
-        this.remove(session);
+        this.remove(session)
 
-        session.updateLastUsed(Date.now());
+        session.updateLastUsed(Date.now())
 
-        this.add(session);
+        this.add(session)
 
-        return true;
+        return true
     }
 
-    public getByPublicKey(
-        publicKey: PublicKeyType
-    ): AnchorLinkSessionManagerSession | undefined {
-        return this.sessions.find(
-            (s) => (publicKey.toString() === s.publicKey.toString())
-        )
+    public getByPublicKey(publicKey: PublicKeyType): AnchorLinkSessionManagerSession | undefined {
+        return this.sessions.find((s) => publicKey.toString() === s.publicKey.toString())
     }
 
     public has(publicKey: PublicKeyType): boolean {
@@ -89,20 +83,21 @@ export class AnchorLinkSessionManagerStorage {
 
     public static unserialize(raw: string): AnchorLinkSessionManagerStorage {
         const data = JSON.parse(raw)
-        return new AnchorLinkSessionManagerStorage({
-            ...data,
-            sessions: data.sessions.map(
-                (s) =>
-                    new AnchorLinkSessionManagerSession(
-                        s.network,
-                        s.actor,
-                        s.permission,
-                        s.publicKey,
-                        s.name,
-                        s.created,
-                        s.lastUsed
-                    )
-            ),
-        })
+        return new AnchorLinkSessionManagerStorage(
+            Object.assign({}, data, {
+                sessions: data.sessions.map(
+                    (s) =>
+                        new AnchorLinkSessionManagerSession(
+                            s.network,
+                            s.actor,
+                            s.permission,
+                            s.publicKey,
+                            s.name,
+                            s.created,
+                            s.lastUsed
+                        )
+                ),
+            })
+        )
     }
 }
