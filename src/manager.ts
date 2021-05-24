@@ -105,8 +105,12 @@ export class AnchorLinkSessionManager {
             const linkUrl = `wss://${this.storage.linkUrl}/${this.storage.linkId}`
             const socket = new WebSocket(linkUrl)
             socket.onopen = (event) => {
-                if (this.handler && this.handler.onSocketEvent) {
-                    this.handler.onSocketEvent('onopen', event)
+                try {
+                    if (this.handler && this.handler.onSocketEvent) {
+                        this.handler.onSocketEvent('onopen', event)
+                    }
+                } catch (e) {
+                    reject(e)
                 }
                 manager.connecting = false
                 manager.heartbeat()
@@ -114,18 +118,22 @@ export class AnchorLinkSessionManager {
                 resolve(manager.socket)
             }
             socket.onmessage = (message: any) => {
-                if (this.handler && this.handler.onSocketEvent) {
-                    this.handler.onSocketEvent('onmessage', message)
-                }
                 try {
+                    if (this.handler && this.handler.onSocketEvent) {
+                        this.handler.onSocketEvent('onmessage', message)
+                    }
                     manager.handleRequest(message.data)
                 } catch (e) {
                     reject(e)
                 }
             }
             socket.onerror = function (err) {
-                if (this.handler && this.handler.onSocketEvent) {
-                    this.handler.onSocketEvent('onerror', err)
+                try {
+                    if (this.handler && this.handler.onSocketEvent) {
+                        this.handler.onSocketEvent('onerror', err)
+                    }
+                } catch (e) {
+                    reject(e)
                 }
                 manager.ready = false
                 switch (err.code) {
@@ -151,8 +159,12 @@ export class AnchorLinkSessionManager {
                 }
             }
             socket.onclose = function (event) {
-                if (this.handler && this.handler.onSocketEvent) {
-                    this.handler.onSocketEvent('onclose', event)
+                try {
+                    if (this.handler && this.handler.onSocketEvent) {
+                        this.handler.onSocketEvent('onclose', event)
+                    }
+                } catch (e) {
+                    reject(e)
                 }
                 // add variable about whether this is enabled beyond connecting
                 manager.connecting = false
@@ -173,8 +185,12 @@ export class AnchorLinkSessionManager {
             socket.addEventListener('ping', (event) => {
                 // Reset retries on successful ping
                 manager.retries = 0
-                if (this.handler && this.handler.onSocketEvent) {
-                    this.handler.onSocketEvent('onping', event)
+                try {
+                    if (this.handler && this.handler.onSocketEvent) {
+                        this.handler.onSocketEvent('onping', event)
+                    }
+                } catch (e) {
+                    reject(e)
                 }
                 manager.heartbeat()
                 manager.socket.send('pong')
