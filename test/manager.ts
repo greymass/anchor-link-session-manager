@@ -33,6 +33,19 @@ suite('manager', function () {
         assert.equal(mockStorage.sessions, manager.storage.sessions)
     })
 
+    test('init with custom callback service', function () {
+        const linkUrl = 'cb.anchor.tools'
+        const manager = new AnchorLinkSessionManager({
+            handler: mockEventHandler,
+            linkUrl,
+        })
+        assert.equal(uuidValidate(manager.storage.linkId), true)
+        assert.equal(manager.storage.linkUrl, linkUrl)
+        assert.doesNotThrow(() => {
+            PrivateKey.from(manager.storage.requestKey)
+        })
+    })
+
     test('connection retry', async function () {
         const testStorage = new AnchorLinkSessionManagerStorage({
             linkId: mockStorage.linkId,

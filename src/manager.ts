@@ -18,6 +18,7 @@ import {unsealMessage} from './utils'
 
 export interface AnchorLinkSessionManagerOptions {
     handler: AnchorLinkSessionManagerEventHander
+    linkUrl?: string
     storage?: AnchorLinkSessionManagerStorage
 }
 
@@ -46,7 +47,7 @@ export class AnchorLinkSessionManager {
         } else {
             this.storage = new AnchorLinkSessionManagerStorage({
                 linkId: uuid(),
-                linkUrl: 'cb.anchor.link',
+                linkUrl: options.linkUrl || 'cb.anchor.link',
                 requestKey: PrivateKey.generate('K1').toWif(),
                 sessions: [],
             })
