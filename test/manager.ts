@@ -58,13 +58,31 @@ suite('manager', function () {
             storage: testStorage,
         })
         manager.connect()
-        await setTimeout(() => {
+        await setTimeout(async () => {
             assert.equal(manager.retries > 0, true)
             assert.equal(manager.ready, false)
-            manager.disconnect()
+            await manager.disconnect()
         }, 500)
     })
 
+    test('connection heartbeat', async function () {
+        const testStorage = new AnchorLinkSessionManagerStorage({
+            linkId: mockStorage.linkId,
+            linkUrl: 'cb.anchor.link',
+            requestKey: mockStorage.requestKey,
+            sessions: mockStorage.sessions,
+        })
+        const manager = new AnchorLinkSessionManager({
+            handler: mockEventHandler,
+            storage: testStorage,
+        })
+        manager.connect()
+        await setTimeout(async () => {
+            assert.equal(manager.retries > 0, true)
+            assert.equal(manager.ready, false)
+            await manager.disconnect()
+        }, 25000)
+    })
 
     test('connect and disconnect', async function () {
         const manager = new AnchorLinkSessionManager({
@@ -73,7 +91,7 @@ suite('manager', function () {
         })
         await manager.connect()
         assert.equal(manager.ready, true)
-        manager.disconnect()
+        await manager.disconnect()
         assert.equal(manager.ready, false)
     })
 

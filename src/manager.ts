@@ -93,8 +93,10 @@ export class AnchorLinkSessionManager {
 
     heartbeat() {
         clearTimeout(this.pingTimeout)
-        this.pingTimeout = setTimeout(() => {
-            this.socket && this.socket.close()
+        this.pingTimeout = setTimeout(async () => {
+            if (this.socket && this.socket.readyState === 1) {
+                await this.disconnect()
+            }
         }, 10000 + 1000)
     }
 
@@ -171,10 +173,10 @@ export class AnchorLinkSessionManager {
                 manager.connecting = false
                 if (event.code !== 1000 && event.code !== 4001) {
                     const wait = backoff(manager.retries)
-                    manager.retry = setTimeout(() => {
+                    manager.retry = setTimeout(async () => {
                         try {
                             manager.retries++
-                            manager.disconnect()
+                            await manager.disconnect()
                             clearInterval(manager.pingTimeout)
                             manager.connect()
                         } catch (error) {
@@ -207,12 +209,12 @@ export class AnchorLinkSessionManager {
         })
     }
 
-    disconnect() {
+    async disconnect() {
         clearTimeout(this.retry)
         clearTimeout(this.pingTimeout)
         this.connecting = false
         this.ready = false
-        this.socket.close(1000)
+        await this.socket.close(1000)
     }
 
     handleRequest(encoded: Bytes): string {

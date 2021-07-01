@@ -57,7 +57,7 @@ suite('anchor-link', function () {
 
     teardown(async () => {
         manager.clearSessions()
-        manager.disconnect()
+        await manager.disconnect()
     })
 
     suiteTeardown(() => {
