@@ -23,7 +23,18 @@ export class AnchorLinkSessionManagerStorage {
     }
 
     public add(session: AnchorLinkSessionManagerSession) {
-        this.sessions.push(session)
+        const existingIndex = this.sessions.findIndex((s) => {
+            const matchingNetwork = session.network.equals(s.network)
+            const matchingActor = session.actor.equals(s.actor)
+            const matchingPermissions = session.permission.equals(s.permission)
+            const matchingAppName = session.name.equals(s.name)
+            return matchingNetwork && matchingActor && matchingPermissions && matchingAppName
+        })
+        if (existingIndex >= 0) {
+            this.sessions.splice(existingIndex, 1, session)
+        } else {
+            this.sessions.push(session)
+        }
     }
 
     public get(

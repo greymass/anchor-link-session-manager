@@ -53,6 +53,39 @@ suite('storage', function () {
         assert.equal(matching !== undefined, true)
     })
 
+    test('add session and prevent duplicates', function () {
+        const manager = new AnchorLinkSessionManager({
+            handler: mockEventHandler,
+        })
+        const session1 = new AnchorLinkSessionManagerSession(
+            mockSession.network,
+            mockSession.actor,
+            mockSession.permission,
+            mockSession.publicKey,
+            mockSession.name
+        )
+        manager.addSession(session1)
+        const newPublicKey = 'PUB_K1_4yHCwKRT8Z6JXGg4GiTuJLWCg2XZETcnSEN5VhSM6okbb51rvo'
+        const session2 = new AnchorLinkSessionManagerSession(
+            mockSession.network,
+            mockSession.actor,
+            mockSession.permission,
+            newPublicKey, // alter public key to ensure old session was replaced
+            mockSession.name
+        )
+        manager.addSession(session2)
+        assert.equal(manager.storage.sessions.length, 1)
+        const matching = manager.storage.sessions.find(
+            (session) =>
+                session.network.toString() === mockSession.network &&
+                session.actor.toString() === mockSession.actor &&
+                session.permission.toString() === mockSession.permission &&
+                session.publicKey.toString() === newPublicKey &&
+                session.name.toString() === mockSession.name
+        )
+        assert.equal(matching !== undefined, true)
+    })
+
     test('add/remove sessions', function () {
         const manager = new AnchorLinkSessionManager({
             handler: mockEventHandler,
