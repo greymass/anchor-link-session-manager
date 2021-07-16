@@ -195,8 +195,12 @@ export class AnchorLinkSessionManager {
                 } catch (e) {
                     reject(e)
                 }
-                manager.heartbeat()
-                manager.socket.send('pong')
+                try {
+                    manager.heartbeat()
+                    manager.socket.send('pong')
+                } catch (error) {
+                    console.log('SessionManager ping failed', error)
+                }
             })
             manager.socket = socket
         }).catch((error) => {
