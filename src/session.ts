@@ -87,12 +87,12 @@ export class AnchorLinkSessionManagerSession {
     }
 
     public static fromLoginResult(result: LoginResult): AnchorLinkSessionManagerSession {
-        const linkInfo = result.request.getInfoKey('link', LinkCreate)
+        const linkInfo = result.resolved.request.getInfoKey('link', LinkCreate)
         if (!linkInfo || !linkInfo['request_key']) {
             throw new Error('identity request does not contain link information')
         }
         return new AnchorLinkSessionManagerSession(
-            result.request.getChainId(),
+            result.resolved.request.getChainId(),
             result.session.auth.actor,
             result.session.auth.permission,
             String(linkInfo['request_key']),
