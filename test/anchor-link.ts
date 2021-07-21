@@ -49,7 +49,12 @@ suite('anchor-link', function () {
         }
         transport = new MockTransport(manager, wallet)
         link = new AnchorLink({
-            chainId: wallet.chainId,
+            chains: [
+                {
+                    chainId: wallet.chainId,
+                    nodeUrl: client,
+                },
+            ],
             client,
             transport,
         })
