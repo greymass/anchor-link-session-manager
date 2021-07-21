@@ -76,7 +76,7 @@ suite('anchor-link', function () {
             wallet.chainId,
             response.payload.sa,
             response.payload.sp,
-            response.request.toString()
+            response.resolved.request.toString()
         )
         manager.addSession(session)
         // ensure it was added
