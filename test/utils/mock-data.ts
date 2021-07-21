@@ -18,7 +18,7 @@ export const mockEventHandler: AnchorLinkSessionManagerEventHander = {
     },
     onSocketEvent: (type, message) => {
         // console.log(type, message)
-    }
+    },
 }
 
 export const mockSession = {

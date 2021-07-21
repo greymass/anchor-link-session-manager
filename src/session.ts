@@ -51,7 +51,7 @@ export class AnchorLinkSessionManagerSession {
     }
 
     updateLastUsed(time: Number) {
-        this.lastUsed = time;
+        this.lastUsed = time
     }
 
     public static fromIdentityRequest(
@@ -82,7 +82,7 @@ export class AnchorLinkSessionManagerSession {
             actor,
             permission,
             String(linkInfo['request_key']),
-            String(linkInfo['session_name']),
+            String(linkInfo['session_name'])
         )
     }
 
