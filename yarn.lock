@@ -466,10 +466,10 @@ ajv@^8.0.1:
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
-anchor-link@^3.2.3:
-  version "3.2.3"
-  resolved "https://registry.yarnpkg.com/anchor-link/-/anchor-link-3.2.3.tgz#ed57b54050a74ae3fb391bdb67f78c7196d8a343"
-  integrity sha512-1AnQLwO6tKWAP7l9/dwQ4iRT8RvNFBDPb7mxdqS2hURJa6zXEI9UdIMKCVKP64iiu2Jekf8/TSXnFKJFVXIPog==
+anchor-link@^3.3.0:
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/anchor-link/-/anchor-link-3.3.2.tgz#7165b7d28cfe26ce2f7db959e8971bb13c029c20"
+  integrity sha512-JDsI2Xwy4Y4D1AzfgSOioOBb5GfDPteQZOSu+cs2hT8gdRg4Asfhnxj8qDwpZX5RWdxP2NyHJEqBW5xDWH93kw==
   dependencies:
     "@greymass/eosio" "^0.4.0"
     asmcrypto.js "^2.3.2"
