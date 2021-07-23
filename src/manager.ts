@@ -1,4 +1,4 @@
-import WebSocket from 'isomorphic-ws'
+import {Listener, ListenerEncoding, ListenerOptions} from '@greymass/buoy'
 import {
     Bytes,
     Checksum256,
@@ -17,9 +17,11 @@ import {AnchorLinkSessionManagerStorage} from './storage'
 import {unsealMessage} from './utils'
 
 export interface AnchorLinkSessionManagerOptions {
+    fetch?: typeof fetch
     handler: AnchorLinkSessionManagerEventHander
     linkUrl?: string
     storage?: AnchorLinkSessionManagerStorage
+    WebSocket?: WebSocket
 }
 
 export interface AnchorLinkSessionManagerEventHander {
@@ -29,19 +31,18 @@ export interface AnchorLinkSessionManagerEventHander {
 }
 
 export class AnchorLinkSessionManager {
-    public ready = false
-    public connecting = false
-    public pingTimeout
-    public retries: number
     public storage: AnchorLinkSessionManagerStorage
 
+    private fetch?: typeof fetch
     private handler: AnchorLinkSessionManagerEventHander
-    private retry: any
-    private socket: WebSocket
+    private listener: Listener
+    private listenerOptions: ListenerOptions
 
     constructor(options: AnchorLinkSessionManagerOptions) {
         this.handler = options.handler
-        this.retries = 0
+        if (options && options.fetch) {
+            this.fetch = options.fetch
+        }
         if (options && options.storage) {
             this.storage = options.storage
         } else {
@@ -53,6 +54,64 @@ export class AnchorLinkSessionManager {
             })
             this.handler.onStorageUpdate(this.storage.serialize())
         }
+        this.listenerOptions = {
+            autoConnect: false,
+            encoding: ListenerEncoding.binary,
+            service: `https://${this.storage.linkUrl}`,
+            channel: this.storage.linkId,
+        }
+        if (options.WebSocket) {
+            this.listenerOptions.WebSocket = options.WebSocket
+        }
+        this.listener = this.setupListener()
+    }
+
+    setupListener() {
+        const listener = new Listener(this.listenerOptions)
+
+        listener.on('connect', () => {
+            try {
+                if (this.handler && this.handler.onSocketEvent) {
+                    this.handler.onSocketEvent('onopen', {})
+                }
+            } catch (e) {
+                console.log('SessionManager on:connect exception', e)
+            }
+        })
+
+        listener.on('disconnect', () => {
+            this.disconnect()
+            try {
+                if (this.handler && this.handler.onSocketEvent) {
+                    this.handler.onSocketEvent('onclose', {})
+                }
+            } catch (e) {
+                console.log('SessionManager on:disconnect exception', e)
+            }
+        })
+
+        listener.on('message', (message) => {
+            try {
+                if (this.handler && this.handler.onSocketEvent) {
+                    this.handler.onSocketEvent('onmessage', message)
+                }
+                this.handleRequest(message)
+            } catch (e) {
+                console.log('SessionManager on:message exception', e)
+            }
+        })
+
+        listener.on('error', (error) => {
+            try {
+                if (this.handler && this.handler.onSocketEvent) {
+                    this.handler.onSocketEvent('onerror', error)
+                }
+            } catch (e) {
+                console.log('SessionManager on:error exception', e)
+            }
+        })
+
+        return listener
     }
 
     addSession(session: AnchorLinkSessionManagerSession) {
@@ -91,134 +150,12 @@ export class AnchorLinkSessionManager {
         this.handler.onStorageUpdate(this.storage.serialize())
     }
 
-    heartbeat() {
-        clearTimeout(this.pingTimeout)
-        this.pingTimeout = setTimeout(async () => {
-            if (this.socket && this.socket.readyState === 1) {
-                await this.disconnect()
-            }
-        }, 10000 + 1000)
+    connect() {
+        this.listener.connect()
     }
 
-    connect(): Promise<WebSocket> {
-        const manager = this
-        this.connecting = true
-        this.ready = false
-        return new Promise((resolve, reject) => {
-            const linkUrl = `wss://${this.storage.linkUrl}/${this.storage.linkId}`
-            const socket = new WebSocket(linkUrl)
-            socket.onopen = (event) => {
-                try {
-                    if (this.handler && this.handler.onSocketEvent) {
-                        this.handler.onSocketEvent('onopen', event)
-                    }
-                } catch (e) {
-                    reject(e)
-                }
-                manager.connecting = false
-                manager.heartbeat()
-                manager.ready = true
-                resolve(manager.socket)
-            }
-            socket.onmessage = (message: any) => {
-                try {
-                    if (this.handler && this.handler.onSocketEvent) {
-                        this.handler.onSocketEvent('onmessage', message)
-                    }
-                    manager.handleRequest(message.data)
-                } catch (e) {
-                    reject(e)
-                }
-            }
-            socket.onerror = function (err) {
-                try {
-                    if (this.handler && this.handler.onSocketEvent) {
-                        this.handler.onSocketEvent('onerror', err)
-                    }
-                } catch (e) {
-                    reject(e)
-                }
-                manager.ready = false
-                switch (err.code) {
-                    case 'ENOTFOUND':
-                    case 'ECONNREFUSED': {
-                        const wait = backoff(manager.retries)
-                        manager.retry = setTimeout(() => {
-                            try {
-                                manager.retries++
-                                clearInterval(manager.pingTimeout)
-                                manager.connect()
-                            } catch (error) {
-                                console.log('error caught', error)
-                            }
-                        }, wait)
-                        break
-                    }
-                    default: {
-                        clearInterval(manager.pingTimeout)
-                        reject(err)
-                        break
-                    }
-                }
-            }
-            socket.onclose = function (event) {
-                try {
-                    if (this.handler && this.handler.onSocketEvent) {
-                        this.handler.onSocketEvent('onclose', event)
-                    }
-                } catch (e) {
-                    reject(e)
-                }
-                // add variable about whether this is enabled beyond connecting
-                manager.connecting = false
-                if (event.code !== 1000 && event.code !== 4001) {
-                    const wait = backoff(manager.retries)
-                    manager.retry = setTimeout(async () => {
-                        try {
-                            manager.retries++
-                            await manager.disconnect()
-                            clearInterval(manager.pingTimeout)
-                            manager.connect()
-                        } catch (error) {
-                            console.log('error caught', error)
-                        }
-                    }, wait)
-                }
-            }
-            socket.addEventListener('ping', (event) => {
-                // Reset retries on successful ping
-                manager.retries = 0
-                try {
-                    if (this.handler && this.handler.onSocketEvent) {
-                        this.handler.onSocketEvent('onping', event)
-                    }
-                } catch (e) {
-                    reject(e)
-                }
-                try {
-                    manager.heartbeat()
-                    manager.socket.send('pong')
-                } catch (error) {
-                    console.log('SessionManager ping failed', error)
-                }
-            })
-            manager.socket = socket
-        }).catch((error) => {
-            console.log(
-                'SessionManager connect: caught error in promise',
-                error.message,
-                error.code,
-                manager.retries
-            )
-        })
-    }
-
-    async disconnect() {
-        clearTimeout(this.retry)
-        clearTimeout(this.pingTimeout)
-        this.connecting = false
-        this.ready = false
-        await this.socket.close(1000)
+    disconnect() {
+        this.listener.disconnect()
     }
 
     handleRequest(encoded: Bytes): string {
@@ -250,8 +187,8 @@ export class AnchorLinkSessionManager {
         // Return the unsealed message
         return unsealed
     }
-}
 
-function backoff(n) {
-    return Math.min(Math.pow(n * 100, 2) / 1000, 5000)
+    get ready(): boolean {
+        return this.listener && this.listener.isConnected
+    }
 }
