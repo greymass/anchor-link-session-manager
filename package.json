@@ -1,7 +1,7 @@
 {
     "name": "@greymass/anchor-link-session-manager",
     "description": "Session management for signature providers when receiving requests using the Anchor Link protocol",
-    "version": "0.2.9",
+    "version": "0.3.0-rc1",
     "homepage": "https://github.com/greymass/anchor-link-session-manager",
     "license": "BSD-3-Clause",
     "main": "lib/index.js",
@@ -15,8 +15,10 @@
         "prepare": "make"
     },
     "dependencies": {
+        "@greymass/buoy": "^1.0.0",
         "@greymass/eosio": "^0.4.7",
         "asmcrypto.js": "^2.3.2",
+        "cross-fetch": "^3.1.4",
         "eosio-signing-request": "^2.2.2",
         "isomorphic-ws": "^4.0.1",
         "pako": "^2.0.3",
@@ -30,7 +32,7 @@
         "@types/websocket": "^1.0.3",
         "@typescript-eslint/eslint-plugin": "^4.28.4",
         "@typescript-eslint/parser": "^4.28.4",
-        "anchor-link": "^3.3.0",
+        "anchor-link": "^3.3.2",
         "assert": "^2.0.0",
         "eslint": "^7.31.0",
         "eslint-config-prettier": "^8.3.0",
