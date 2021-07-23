@@ -1,6 +1,7 @@
 import wtf from 'wtfnode'
 import * as assert from 'assert'
 import {join as joinPath} from 'path'
+import WebSocket from 'isomorphic-ws'
 import 'mocha'
 
 import {APIClient} from '@greymass/eosio'
@@ -33,6 +34,7 @@ suite('anchor-link', function () {
         manager = new AnchorLinkSessionManager({
             handler: wallet.getEventHandler(),
             storage: mockStorage,
+            WebSocket,
         })
         transaction = {
             action: {
@@ -115,8 +117,6 @@ suite('anchor-link', function () {
     })
 
     test('transact rejects unknown session', async () => {
-        // start mock manager service
-        await manager.connect()
         // login to mock manager service
         const identity = await link.login('anchor-link-session-manager')
         // do not add session to manager, and ensure no sessions exist

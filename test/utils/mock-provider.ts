@@ -14,7 +14,7 @@ export class MockProvider implements APIProvider {
     constructor(private dir: string) {}
 
     getFilename(path: string, params?: unknown) {
-        const digest = Checksum160.from(
+        const digest = Checksum160.hash(
             Bytes.from(path + (params ? JSON.stringify(params) : ''), 'utf8')
         )
         return joinPath(this.dir, digest + '.json')

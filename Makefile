@@ -6,7 +6,7 @@ lib: ${SRC_FILES} package.json tsconfig.json node_modules rollup.config.js
 .PHONY: test
 test: node_modules
 	@TS_NODE_PROJECT='./test/tsconfig.json' \
-		./node_modules/.bin/mocha -u tdd -r ts-node/register --extension ts test/*.ts --grep '$(grep)'
+		./node_modules/.bin/mocha -u tdd -r ts-node/register --extension ts test/*.ts --grep '$(grep)' --exit --timeout 15000
 
 .PHONY: coverage
 coverage: node_modules
