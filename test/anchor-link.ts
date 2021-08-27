@@ -53,7 +53,7 @@ suite('anchor-link', function () {
         link = new AnchorLink({
             chains: [
                 {
-                    chainId: wallet.chainId,
+                    chainId: String(wallet.chainId),
                     nodeUrl: client,
                 },
             ],

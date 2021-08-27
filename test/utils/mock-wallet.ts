@@ -119,7 +119,7 @@ export class MockWallet implements AbiProvider {
             },
             onSocketEvent: (type, event) => {
                 // console.log(type, event)
-            }
+            },
         }
     }
 
@@ -127,7 +127,7 @@ export class MockWallet implements AbiProvider {
      * Fetch the ABI for given account, cached.
      * @internal
      */
-    public async getAbi(account: Name) {
+    public async getAbi(account: Name): Promise<ABIDef> {
         const key = account.toString()
         let rv = this.abiCache.get(key)
         if (!rv) {
