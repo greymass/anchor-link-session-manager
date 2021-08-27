@@ -78,7 +78,7 @@ export class AnchorLinkSessionManagerSession {
         }
 
         return new AnchorLinkSessionManagerSession(
-            network,
+            String(network),
             actor,
             permission,
             String(linkInfo['request_key']),
@@ -92,7 +92,7 @@ export class AnchorLinkSessionManagerSession {
             throw new Error('identity request does not contain link information')
         }
         return new AnchorLinkSessionManagerSession(
-            result.resolved.request.getChainId(),
+            String(result.resolved.request.getChainId()),
             result.session.auth.actor,
             result.session.auth.permission,
             String(linkInfo['request_key']),
