@@ -80,7 +80,6 @@ export class AnchorLinkSessionManager {
         })
 
         listener.on('disconnect', () => {
-            this.disconnect()
             try {
                 if (this.handler && this.handler.onSocketEvent) {
                     this.handler.onSocketEvent('onclose', {})
