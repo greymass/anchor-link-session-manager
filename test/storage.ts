@@ -33,13 +33,7 @@ suite('storage', function () {
         const manager = new AnchorLinkSessionManager({
             handler: mockEventHandler,
         })
-        const session = new AnchorLinkSessionManagerSession(
-            mockSession.network,
-            mockSession.actor,
-            mockSession.permission,
-            mockSession.publicKey,
-            mockSession.name
-        )
+        const session = AnchorLinkSessionManagerSession.from({...mockSession})
         manager.addSession(session)
         assert.equal(manager.storage.sessions.length, 1)
         const matching = manager.storage.sessions.find(
@@ -57,22 +51,13 @@ suite('storage', function () {
         const manager = new AnchorLinkSessionManager({
             handler: mockEventHandler,
         })
-        const session1 = new AnchorLinkSessionManagerSession(
-            mockSession.network,
-            mockSession.actor,
-            mockSession.permission,
-            mockSession.publicKey,
-            mockSession.name
-        )
+        const session1 = AnchorLinkSessionManagerSession.from({...mockSession})
         manager.addSession(session1)
         const newPublicKey = 'PUB_K1_4yHCwKRT8Z6JXGg4GiTuJLWCg2XZETcnSEN5VhSM6okbb51rvo'
-        const session2 = new AnchorLinkSessionManagerSession(
-            mockSession.network,
-            mockSession.actor,
-            mockSession.permission,
-            newPublicKey, // alter public key to ensure old session was replaced
-            mockSession.name
-        )
+        const session2 = AnchorLinkSessionManagerSession.from({
+            ...mockSession,
+            publicKey: newPublicKey, // alter public key to ensure old session was replaced
+        })
         manager.addSession(session2)
         assert.equal(manager.storage.sessions.length, 1)
         const matching = manager.storage.sessions.find(
@@ -91,24 +76,17 @@ suite('storage', function () {
             handler: mockEventHandler,
         })
         assert.equal(manager.storage.sessions.length, 0)
-
-        const session1 = new AnchorLinkSessionManagerSession(
-            mockSession.network,
-            mockSession.actor,
-            mockSession.permission,
-            mockSession.publicKey,
-            'testsession1'
-        )
+        const session1 = AnchorLinkSessionManagerSession.from({
+            ...mockSession,
+            name: 'testsession1',
+        })
         manager.addSession(session1)
         assert.equal(manager.storage.sessions.length, 1)
 
-        const session2 = new AnchorLinkSessionManagerSession(
-            mockSession.network,
-            mockSession.actor,
-            mockSession.permission,
-            mockSession.publicKey,
-            'testsession2'
-        )
+        const session2 = AnchorLinkSessionManagerSession.from({
+            ...mockSession,
+            name: 'testsession2',
+        })
         manager.addSession(session2)
         assert.equal(manager.storage.sessions.length, 2)
 
@@ -125,13 +103,10 @@ suite('storage', function () {
         })
         assert.equal(manager.storage.sessions.length, 0)
 
-        const session1 = new AnchorLinkSessionManagerSession(
-            mockSession.network,
-            mockSession.actor,
-            mockSession.permission,
-            mockSession.publicKey,
-            'testsession1'
-        )
+        const session1 = AnchorLinkSessionManagerSession.from({
+            ...mockSession,
+            name: 'testsession1',
+        })
         manager.addSession(session1)
 
         const serialized = manager.storage.serialize()
@@ -144,13 +119,7 @@ suite('storage', function () {
         const manager = new AnchorLinkSessionManager({
             handler: mockEventHandler,
         })
-        const session = new AnchorLinkSessionManagerSession(
-            mockSession.network,
-            mockSession.actor,
-            mockSession.permission,
-            mockSession.publicKey,
-            mockSession.name
-        )
+        const session = AnchorLinkSessionManagerSession.from({...mockSession})
         manager.addSession(session)
         assert.equal(manager.storage.sessions.length, 1)
         const matching = manager.getSession(
@@ -177,21 +146,15 @@ suite('storage', function () {
         const manager = new AnchorLinkSessionManager({
             handler: mockEventHandler,
         })
-        const session1 = new AnchorLinkSessionManagerSession(
-            mockSession.network,
-            mockSession.actor,
-            mockSession.permission,
-            mockSession.publicKey,
-            'testsession1'
-        )
+        const session1 = AnchorLinkSessionManagerSession.from({
+            ...mockSession,
+            name: 'testsession1',
+        })
         manager.addSession(session1)
-        const session2 = new AnchorLinkSessionManagerSession(
-            mockSession.network,
-            mockSession.actor,
-            mockSession.permission,
-            mockSession.publicKey,
-            'testsession2'
-        )
+        const session2 = AnchorLinkSessionManagerSession.from({
+            ...mockSession,
+            name: 'testsession2',
+        })
         manager.addSession(session2)
         assert.equal(manager.storage.sessions.length, 2)
         manager.clearSessions()
@@ -202,13 +165,7 @@ suite('storage', function () {
         const manager = new AnchorLinkSessionManager({
             handler: mockEventHandler,
         })
-        const session = new AnchorLinkSessionManagerSession(
-            mockSession.network,
-            mockSession.actor,
-            mockSession.permission,
-            mockSession.publicKey,
-            mockSession.name
-        )
+        const session = AnchorLinkSessionManagerSession.from({...mockSession})
         manager.addSession(session)
         assert.equal(manager.storage.sessions.length, 1)
         assert.equal(JSON.stringify(manager.storage), manager.storage.serialize())

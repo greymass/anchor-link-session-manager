@@ -13,15 +13,21 @@ suite('session', function () {
         const publicKey = 'PUB_K1_6RrvujLQN1x5Tacbep1KAk8zzKpSThAQXBCKYFfGUYeACcSRFs'
         const sessionName = 'testsession'
         // Initialize with untyped values
-        new AnchorLinkSessionManagerSession(chainId, account, permission, publicKey, sessionName)
+        AnchorLinkSessionManagerSession.from({
+            network: chainId,
+            actor: account,
+            permission: permission,
+            publicKey: publicKey,
+            name: sessionName,
+        })
         // Initialize with eosio typed values
-        const session = new AnchorLinkSessionManagerSession(
-            Checksum256.from(chainId),
-            Name.from(account),
-            Name.from(permission),
-            PublicKey.from(publicKey),
-            Name.from(sessionName)
-        )
+        const session = AnchorLinkSessionManagerSession.from({
+            network: Checksum256.from(chainId),
+            actor: Name.from(account),
+            permission: Name.from(permission),
+            publicKey: PublicKey.from(publicKey),
+            name: Name.from(sessionName),
+        })
         assert.equal(session.name, sessionName)
         assert.equal(session.publicKey, publicKey)
         assert.equal(session.network, chainId)

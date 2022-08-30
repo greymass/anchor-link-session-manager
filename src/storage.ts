@@ -43,7 +43,12 @@ export class AnchorLinkSessionManagerStorage {
         permission: Name
     ): AnchorLinkSessionManagerSession | undefined {
         return this.sessions.find(
-            (s) => !(chainId === s.network && account === s.name && permission === s.permission)
+            (s) =>
+                !(
+                    chainId.equals(s.network) &&
+                    account.equals(s.name) &&
+                    permission.equals(s.permission)
+                )
         )
     }
 
@@ -79,11 +84,11 @@ export class AnchorLinkSessionManagerStorage {
         this.sessions = this.sessions.filter(
             (s) =>
                 !(
-                    session.name.toString() === s.name.toString() &&
-                    session.publicKey.toString() === s.publicKey.toString() &&
-                    session.network.toString() === s.network.toString() &&
-                    session.actor.toString() === s.actor.toString() &&
-                    session.permission.toString() === s.permission.toString()
+                    session.name.equals(s.name) &&
+                    session.publicKey.equals(s.publicKey) &&
+                    session.network.equals(s.network) &&
+                    session.actor.equals(s.actor) &&
+                    session.permission.equals(s.permission)
                 )
         )
     }
@@ -96,17 +101,10 @@ export class AnchorLinkSessionManagerStorage {
         const data = JSON.parse(raw)
         return new AnchorLinkSessionManagerStorage(
             Object.assign({}, data, {
-                sessions: data.sessions.map(
-                    (s) =>
-                        new AnchorLinkSessionManagerSession(
-                            s.network,
-                            s.actor,
-                            s.permission,
-                            s.publicKey,
-                            s.name,
-                            s.created,
-                            s.lastUsed
-                        )
+                sessions: data.sessions.map((s) =>
+                    AnchorLinkSessionManagerSession.from({
+                        ...s,
+                    })
                 ),
             })
         )
