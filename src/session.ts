@@ -1,12 +1,10 @@
 import {
     Checksum256,
     Checksum256Type,
-    Int32,
     Int64,
     Name,
     NameType,
     PublicKey,
-    PublicKeyType,
     Struct,
 } from '@greymass/eosio'
 import {LoginResult} from 'anchor-link'
