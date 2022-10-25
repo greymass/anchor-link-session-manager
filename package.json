@@ -1,7 +1,7 @@
 {
     "name": "@greymass/anchor-link-session-manager",
     "description": "Session management for signature providers when receiving requests using the Anchor Link protocol",
-    "version": "0.3.1",
+    "version": "0.3.2",
     "homepage": "https://github.com/greymass/anchor-link-session-manager",
     "license": "BSD-3-Clause",
     "main": "lib/anchor-link-session-manager.js",
@@ -15,7 +15,7 @@
         "prepare": "make"
     },
     "dependencies": {
-        "@greymass/buoy": "^1.0.1",
+        "@greymass/buoy": "^1.0.2",
         "@greymass/eosio": "^0.4.9",
         "asmcrypto.js": "^2.3.2",
         "cross-fetch": "^3.1.4",
