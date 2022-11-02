@@ -15,7 +15,7 @@
         "prepare": "make"
     },
     "dependencies": {
-        "@greymass/buoy": "^1.0.2",
+        "@greymass/buoy": "^1.0.3",
         "@greymass/eosio": "^0.4.9",
         "asmcrypto.js": "^2.3.2",
         "cross-fetch": "^3.1.4",

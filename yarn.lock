@@ -223,10 +223,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@greymass/buoy@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@greymass/buoy/-/buoy-1.0.2.tgz#f0d8ceabfade24d2e81b168377c58aa4ae25dde5"
-  integrity sha512-W5OIFM/+UnBtlp2lrDi/JGyr7HlRa98CQlRlxUswBrbIKybSEPkt4ubSwS/BmyarF05LqfESrrA8rQQNq5bDtQ==
+"@greymass/buoy@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@greymass/buoy/-/buoy-1.0.3.tgz#1bc6f104d51860033ec40e54a8a10293cefc0dca"
+  integrity sha512-hL/+Hj5noB5n5lfZXJKdSJABpeFKtWlFDjSzPzOzw1SKhXNIGX7waW12ew49necdsNC5VN2AQOs1hHBGLENP7g==
   dependencies:
     eventemitter3 "^4.0.7"
     tslib "^2.1.0"
