@@ -1,6 +1,6 @@
 import {join as joinPath} from 'path'
 import {v4 as uuid} from 'uuid'
-import {APIClient, PrivateKey} from '@greymass/eosio'
+import {APIClient, PrivateKey} from '@wharfkit/antelope'
 import {AnchorLinkSessionManagerEventHander} from '../../src/manager'
 import {AnchorLinkSessionManagerStorage} from '../../src/storage'
 import {MockProvider} from './mock-provider'

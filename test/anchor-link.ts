@@ -4,7 +4,7 @@ import {join as joinPath} from 'path'
 import WebSocket from 'isomorphic-ws'
 import 'mocha'
 
-import {APIClient} from '@greymass/eosio'
+import {APIClient} from '@wharfkit/antelope'
 import AnchorLink from 'anchor-link'
 
 import {AnchorLinkSessionManager} from '../src/manager'

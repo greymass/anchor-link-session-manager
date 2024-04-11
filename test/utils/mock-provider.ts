@@ -6,7 +6,7 @@ import {readFile as _readFile, writeFile as _writeFile} from 'fs'
 const readFile = promisify(_readFile)
 const writeFile = promisify(_writeFile)
 
-import {APIProvider, Bytes, Checksum160, FetchProvider} from '@greymass/eosio'
+import {APIMethods, APIProvider, Bytes, Checksum160, FetchProvider} from '@wharfkit/antelope'
 
 export class MockProvider implements APIProvider {
     recordProvider = new FetchProvider('https://jungle3.greymass.com', {fetch})
@@ -21,18 +21,12 @@ export class MockProvider implements APIProvider {
     }
 
     async getExisting(filename: string) {
-        try {
-            const data = await readFile(filename)
-            return JSON.parse(data.toString('utf8'))
-        } catch (error) {
-            if (error.code !== 'ENOENT') {
-                throw error
-            }
-        }
+        const data = await readFile(filename)
+        return {status: 200, json: JSON.parse(data.toString('utf8')), text: data, headers: {}}
     }
 
-    async call(path: string, params?: unknown) {
-        const filename = this.getFilename(path, params)
+    async call(args: {path: string; params?: unknown; methods?: APIMethods | undefined}) {
+        const filename = this.getFilename(args.path, args.params)
         if (process.env['MOCK_RECORD'] !== 'overwrite') {
             const existing = await this.getExisting(filename)
             if (existing) {
@@ -40,12 +34,12 @@ export class MockProvider implements APIProvider {
             }
         }
         if (process.env['MOCK_RECORD']) {
-            const response = await this.recordProvider.call(path, params)
+            const response = await this.recordProvider.call(args)
             const json = JSON.stringify(response, undefined, 4)
             await writeFile(filename, json)
             return response
         } else {
-            throw new Error(`No data for ${path}`)
+            throw new Error(`No data for ${args.path}`)
         }
     }
 }

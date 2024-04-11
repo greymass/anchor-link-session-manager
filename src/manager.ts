@@ -8,7 +8,7 @@ import {
     PrivateKey,
     PublicKey,
     Serializer,
-} from '@greymass/eosio'
+} from '@wharfkit/antelope'
 import {v4 as uuid} from 'uuid'
 
 import {SealedMessage} from './link-types'

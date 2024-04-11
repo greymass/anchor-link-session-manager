@@ -1,4 +1,4 @@
-import {Checksum256, Name, PrivateKeyType, PublicKeyType} from '@greymass/eosio'
+import {Checksum256, Name, PrivateKeyType, PublicKeyType} from '@wharfkit/antelope'
 
 import {AnchorLinkSessionManagerSession} from './session'
 
