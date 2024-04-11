@@ -15,14 +15,14 @@ import {
     Signature,
     TimePointSec,
     Transaction,
-} from '@greymass/eosio'
+} from '@wharfkit/antelope'
 
 import {
     AbiProvider,
     ResolvedSigningRequest,
     SigningRequest,
     SigningRequestEncodingOptions,
-} from 'eosio-signing-request'
+} from '@wharfkit/signing-request'
 
 import {AnchorLinkSessionManager} from '../../src/manager'
 import {mockWalletConfig} from './mock-data'

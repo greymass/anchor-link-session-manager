@@ -1,5 +1,5 @@
 import {LinkTransport} from 'anchor-link'
-import {SigningRequest} from 'eosio-signing-request'
+import {SigningRequest} from '@wharfkit/signing-request'
 
 import {AnchorLinkSessionManager} from '../../src/manager'
 import {MockWallet} from './mock-wallet'

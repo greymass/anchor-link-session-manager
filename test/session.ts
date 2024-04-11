@@ -1,7 +1,7 @@
 import * as assert from 'assert'
 import 'mocha'
 
-import {Checksum256, Name, PublicKey} from '@greymass/eosio'
+import {Checksum256, Name, PublicKey} from '@wharfkit/antelope'
 
 import {AnchorLinkSessionManagerSession} from '../src/session'
 

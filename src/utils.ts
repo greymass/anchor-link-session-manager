@@ -1,4 +1,4 @@
-import {Bytes, Checksum512, PrivateKey, PublicKey, Serializer, UInt64} from '@greymass/eosio'
+import {Bytes, Checksum512, PrivateKey, PublicKey, Serializer, UInt64} from '@wharfkit/antelope'
 
 import {AES_CBC} from 'asmcrypto.js'
 

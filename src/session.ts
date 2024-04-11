@@ -5,9 +5,9 @@ import {
     NameType,
     PublicKey,
     PublicKeyType,
-} from '@greymass/eosio'
+} from '@wharfkit/antelope'
 import {LoginResult} from 'anchor-link'
-import {SigningRequest} from 'eosio-signing-request'
+import {SigningRequest} from '@wharfkit/signing-request'
 import zlib from 'pako'
 
 import {LinkCreate} from './link-types'

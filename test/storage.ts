@@ -2,7 +2,7 @@ import * as assert from 'assert'
 import 'mocha'
 import {v4 as uuid} from 'uuid'
 
-import {PrivateKey} from '@greymass/eosio'
+import {PrivateKey} from '@wharfkit/antelope'
 
 import {AnchorLinkSessionManager} from '../src/manager'
 import {AnchorLinkSessionManagerSession} from '../src/session'
